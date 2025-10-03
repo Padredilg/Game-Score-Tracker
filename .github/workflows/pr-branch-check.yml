@@ -1,0 +1,17 @@
+name: Enforce PR source branch
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR source
+        run: |
+          if [ "${{ github.head_ref }}" != "develop" ]; then
+            echo "❌ Only PRs from 'develop' are allowed into 'main'."
+            exit 1
+          fi
