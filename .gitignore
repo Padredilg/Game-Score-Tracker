@@ -1,31 +1,125 @@
-# Angular specific
+# -------------------------
+# OS-specific
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# IDEs & Editors
+# -------------------------
+.vscode/
+.history/
+*.code-workspace
+
+.idea/
+*.iml
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# NetBeans
+nbproject/
+dist/
+build/
+
+# -------------------------
+# Angular Specific
+# -------------------------
 /dist/
 /out-tsc/
 /tmp/
 /coverage/
 /e2e/test-output/
 /.angular/
-.angular/
+/.angular-cli.json
+/.ng/
 
-# Node modules and dependency files
+# -------------------------
+# Node.js
+# -------------------------
 /node_modules/
 /package-lock.json
 /yarn.lock
 
-# Environment files
-/.env
-
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.vscode
-.idea
+# -------------------------
+# Environment files
+# -------------------------
+/.env
+.env.local
+.env.*
+
+# -------------------------
+# TypeScript
+# -------------------------
+*.tsbuildinfo
+
+# -------------------------
+# General build/output
+# -------------------------
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.lock
+
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+.eggs/
+.venv
+.env/
+
+# -------------------------
+# Java
+# -------------------------
+target/
+out/
+*.class
+
+# -------------------------
+# C/C++
+# -------------------------
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# -------------------------
+# Rust
+# -------------------------
+target/
+Cargo.lock
+
+# -------------------------
+# Go
+# -------------------------
+bin/
+*.exe
+*.test
+
+# -------------------------
+# Other
+# -------------------------
+coverage/
