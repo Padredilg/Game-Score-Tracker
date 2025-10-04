@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal } from '@angular/core/types/core';
 import { NewUser } from '../../models/user.model';
 import { form } from '@angular/forms/signals';
 
