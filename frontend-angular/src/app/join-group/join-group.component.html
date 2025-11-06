@@ -1,0 +1,19 @@
+<div class="join-group-container">
+  <div class="card">
+    <h2>Enter Group Code</h2>
+    <p>Join a group with your code</p>
+
+    <form (ngSubmit)="joinGroup()">
+      <input
+        type="text"
+        [(ngModel)]="groupCode"
+        name="groupCode"
+        placeholder="Enter your group code"
+        required
+      />
+      <button type="submit">Join Group</button>
+    </form>
+
+    <a routerLink="/">← Back to Login</a>
+  </div>
+</div>

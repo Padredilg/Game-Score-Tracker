@@ -1,0 +1,47 @@
+.join-group-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fc;
+}
+
+.card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 320px;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #0d1b2a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #1b263b;
+}
+
+a {
+  display: block;
+  margin-top: 1rem;
+  color: #0d1b2a;
+  text-decoration: none;
+}
