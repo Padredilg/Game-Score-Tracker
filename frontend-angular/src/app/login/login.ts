@@ -30,9 +30,6 @@ export class LoginComponent {
     }
     this.submitting.set(true);
 
-    // Fake network wait
-    await new Promise(r => setTimeout(r, 800));
-
     console.log('Login payload:', this.form.value);
     alert('Signed in! (hook up to your backend when ready)');
     this.submitting.set(false);
