@@ -4,6 +4,8 @@ package com.cen4010.gamescoretracker.services.auth;
 import com.cen4010.gamescoretracker.dto.auth.LoginRequest;
 import com.cen4010.gamescoretracker.dto.auth.LoginResponse;
 import com.cen4010.gamescoretracker.dto.auth.RegisterRequest;
+import com.cen4010.gamescoretracker.exceptions.EntityExistsException;
+import com.cen4010.gamescoretracker.exceptions.InvalidCredentialsException;
 import com.cen4010.gamescoretracker.models.User;
 import com.cen4010.gamescoretracker.repositories.UserRepository;
 import com.cen4010.gamescoretracker.util.JwtUtil;
@@ -13,9 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,15 +23,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public ResponseEntity<?> register(RegisterRequest request) {
+    public ResponseEntity<User> register(RegisterRequest request) {
 
         validateRegisterRequest(request);
-
-        if (userRepository.existsByUsername(request.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("message", "Username already taken"));
-        }
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -42,23 +35,16 @@ public class AuthService {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    public ResponseEntity<?> login(LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(LoginRequest request) {
         validateLoginRequest(request);
 
-        //verify username
-        Optional<User> optionalUser = userRepository.findByUsername(request.getUsername());
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("message", "Invalid credentials."));
-        }
-        User user = optionalUser.get();
+        //retrieve user
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials."));
 
         //verify password
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("message", "Invalid credentials."));
+            throw new InvalidCredentialsException("Invalid credentials.");
         }
 
         String token = jwtUtil.generateToken(user);
@@ -77,6 +63,10 @@ public class AuthService {
 
         // Validate role using the enum helper we created
         User.Role.fromString(request.getRole());
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new EntityExistsException("Username already taken");
+        }
     }
 
     private void validateLoginRequest(LoginRequest request) {
