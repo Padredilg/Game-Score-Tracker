@@ -11,6 +11,7 @@ import com.cen4010.gamescoretracker.repositories.UserRepository;
 import com.cen4010.gamescoretracker.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ public class AuthService {
         user.setRole(User.Role.fromString(request.getRole()));
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
-        return ResponseEntity.ok(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
@@ -65,7 +67,7 @@ public class AuthService {
         User.Role.fromString(request.getRole());
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new EntityExistsException("Username already taken");
+            throw new EntityExistsException("Username already taken.");
         }
     }
 
