@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface MatchRepository extends JpaRepository<Match, UUID> {
 
-    List<Match> findByGroupId(UUID groupId);
+    List<Match> findByGroupGroupId(UUID groupId);
 }

@@ -24,9 +24,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     @Column(nullable = false)
     private String passwordHash;
 
@@ -74,7 +71,21 @@ public class User {
     private Set<MatchScore> matchScores = new HashSet<>();
 
     public enum Role {
-        ADMIN, REGULAR
+        ADMIN, REGULAR;
+
+        public static Role fromString(String roleStr) {
+            if (roleStr == null) {
+                throw new IllegalArgumentException("Role cannot be null. Valid roles are: ADMIN, REGULAR.");
+            }
+
+            try {
+                return Role.valueOf(roleStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(
+                        "Invalid role: '" + roleStr + "'. Valid roles are: ADMIN, REGULAR."
+                );
+            }
+        }
     }
 }
 

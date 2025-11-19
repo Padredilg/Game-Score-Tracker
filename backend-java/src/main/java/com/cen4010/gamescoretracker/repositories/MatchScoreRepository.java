@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface MatchScoreRepository extends JpaRepository<MatchScore, UUID> {
 
-    List<MatchScore> findByMatchId(UUID matchId);
+    List<MatchScore> findByMatchMatchId(UUID matchId);
 
-    void deleteByMatchId(UUID matchId);
+    void deleteByMatch_MatchId(UUID matchId);
 }
