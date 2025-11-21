@@ -11,14 +11,18 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "groups")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID groupId;
 
     @Column(nullable = false, unique = true)

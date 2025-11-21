@@ -7,14 +7,18 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "match_scores")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MatchScore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID matchScoreId;
 
     @ManyToOne(fetch = FetchType.LAZY)

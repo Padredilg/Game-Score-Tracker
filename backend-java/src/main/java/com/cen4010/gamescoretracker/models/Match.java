@@ -11,14 +11,18 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "matches")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID matchId;
 
     @Column(nullable = false)
