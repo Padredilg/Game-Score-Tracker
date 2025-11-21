@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"group", "matchScores"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
