@@ -36,7 +36,6 @@ public class User {
     @Builder.Default
     private Role role = Role.REGULAR;
 
-    @Column(unique = true)
     private String groupCode; // Admin receives one automatically; regular receives on join
 
     @Builder.Default

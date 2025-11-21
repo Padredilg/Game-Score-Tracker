@@ -1,6 +1,9 @@
 package com.cen4010.gamescoretracker.controllers;
 
 import com.cen4010.gamescoretracker.dto.group.GroupDTO;
+import com.cen4010.gamescoretracker.dto.group.JoinGroupRequest;
+import com.cen4010.gamescoretracker.models.User;
+import com.cen4010.gamescoretracker.services.AuthService;
 import com.cen4010.gamescoretracker.services.GroupService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +18,7 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final AuthService authService;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllGroups() {
@@ -25,6 +29,13 @@ public class GroupController {
         }
 
         return ResponseEntity.ok(groups);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<?> joinGroup(@RequestBody JoinGroupRequest request) {
+        User currentUser = authService.getCurrentUser();
+        groupService.joinGroup(currentUser, request.getGroupCode());
+        return ResponseEntity.ok("User joined group successfully");
     }
 
 }

@@ -42,6 +42,28 @@ public class GroupService {
         userRepository.save(adminUser);
     }
 
+    public void joinGroup(User user, String groupCode) {
+        Group group = groupRepository.findByGroupCode(groupCode)
+                .orElseThrow(() -> new IllegalArgumentException("Group with code " + groupCode + " does not exist"));
+
+        // Check if user is already in a group
+        if (user.getGroup() != null) {
+            throw new IllegalArgumentException("User is already part of a group");
+        }
+
+        // Link user to the group
+        user.setGroup(group);
+        user.setGroupCode(groupCode);
+
+        // Add user to group's user set (optional, but good for bidirectional consistency)
+        group.getUsers().add(user);
+
+        // Save the updated user
+        userRepository.save(user);
+
+        log.info("User {} joined group {}", user.getUsername(), groupCode);
+    }
+
     public List<GroupDTO> getAllGroupDTOs() {
         return groupRepository.findAll().stream()
                 .map(group -> GroupDTO.builder()
