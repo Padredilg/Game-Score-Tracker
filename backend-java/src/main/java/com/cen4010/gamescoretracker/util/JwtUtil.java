@@ -21,6 +21,7 @@ public class JwtUtil {
                 .setSubject(user.getUserId().toString())
                 .claim("role", user.getRole())
                 .claim("username", user.getUsername())
+                .claim("group_code", user.getGroupCode())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET)

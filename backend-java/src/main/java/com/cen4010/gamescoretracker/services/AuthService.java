@@ -1,9 +1,10 @@
-package com.cen4010.gamescoretracker.services.auth;
+package com.cen4010.gamescoretracker.services;
 
 
 import com.cen4010.gamescoretracker.dto.auth.LoginRequest;
 import com.cen4010.gamescoretracker.dto.auth.LoginResponse;
 import com.cen4010.gamescoretracker.dto.auth.RegisterRequest;
+import com.cen4010.gamescoretracker.dto.user.UserDTO;
 import com.cen4010.gamescoretracker.exceptions.EntityExistsException;
 import com.cen4010.gamescoretracker.exceptions.InvalidCredentialsException;
 import com.cen4010.gamescoretracker.models.User;
@@ -20,11 +21,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final GroupService groupService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public ResponseEntity<User> register(RegisterRequest request) {
+    public ResponseEntity<UserDTO> register(RegisterRequest request) {
 
         validateRegisterRequest(request);
 
@@ -34,7 +36,13 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+
+        if (savedUser.getRole() == User.Role.ADMIN) {
+            groupService.createGroupForAdmin(savedUser);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapToUserDTO(savedUser));
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
@@ -50,8 +58,9 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user);
+        LoginResponse response = new LoginResponse(token, mapToUserDTO(user));
 
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(response);
     }
 
     private void validateRegisterRequest(RegisterRequest request) {
@@ -79,5 +88,19 @@ public class AuthService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password cannot be null or empty.");
         }
+    }
+
+    private UserDTO mapToUserDTO(User savedUser) {
+        return UserDTO.builder()
+                .userId(savedUser.getUserId())
+                .username(savedUser.getUsername())
+                .role(savedUser.getRole().name())
+                .groupCode(savedUser.getGroupCode())
+                .victories(savedUser.getVictories())
+                .matchesPlayed(savedUser.getMatchesPlayed())
+                .defeats(savedUser.getDefeats())
+                .cumulativeScore(savedUser.getCumulativeScore())
+                .highestScore(savedUser.getHighestScore())
+                .build();
     }
 }

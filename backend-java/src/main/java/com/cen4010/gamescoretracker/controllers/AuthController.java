@@ -3,8 +3,8 @@ package com.cen4010.gamescoretracker.controllers;
 import com.cen4010.gamescoretracker.dto.auth.LoginRequest;
 import com.cen4010.gamescoretracker.dto.auth.LoginResponse;
 import com.cen4010.gamescoretracker.dto.auth.RegisterRequest;
-import com.cen4010.gamescoretracker.models.User;
-import com.cen4010.gamescoretracker.services.auth.AuthService;
+import com.cen4010.gamescoretracker.dto.user.UserDTO;
+import com.cen4010.gamescoretracker.services.AuthService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<UserDTO> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
