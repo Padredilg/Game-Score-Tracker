@@ -14,17 +14,13 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
     private final GroupService groupService;
     private final UserRepository userRepository;
@@ -109,34 +105,5 @@ public class AuthService implements UserDetailsService {
                 .build();
     }
 
-    public User getCurrentUser() {
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        String username;
-        if (principal instanceof User) {
-            username = ((User) principal).getUsername(); // directly return your User
-        } else {
-            throw new IllegalStateException("Principal is not a User instance");
-        }
-
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
-    }
-
-    @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPasswordHash())
-                .authorities(Collections.emptyList()) // or add roles if you want
-                .build();
-    }
 
 }

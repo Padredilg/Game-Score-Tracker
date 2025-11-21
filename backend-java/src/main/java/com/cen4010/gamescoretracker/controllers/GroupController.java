@@ -5,6 +5,7 @@ import com.cen4010.gamescoretracker.dto.group.JoinGroupRequest;
 import com.cen4010.gamescoretracker.models.User;
 import com.cen4010.gamescoretracker.services.AuthService;
 import com.cen4010.gamescoretracker.services.GroupService;
+import com.cen4010.gamescoretracker.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
-    private final AuthService authService;
+    private final UserService userService;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllGroups() {
@@ -33,7 +34,7 @@ public class GroupController {
 
     @PostMapping("/join")
     public ResponseEntity<?> joinGroup(@RequestBody JoinGroupRequest request) {
-        User currentUser = authService.getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         groupService.joinGroup(currentUser, request.getGroupCode());
         return ResponseEntity.ok("User joined group successfully");
     }

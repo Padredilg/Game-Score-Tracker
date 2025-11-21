@@ -64,6 +64,7 @@ public class GroupService {
         log.info("User {} joined group {}", user.getUsername(), groupCode);
     }
 
+
     public List<GroupDTO> getAllGroupDTOs() {
         return groupRepository.findAll().stream()
                 .map(group -> GroupDTO.builder()
