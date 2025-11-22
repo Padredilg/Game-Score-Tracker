@@ -1,4 +1,4 @@
-package com.cen4010.gamescoretracker.util;
+package com.cen4010.gamescoretracker.security;
 
 import com.cen4010.gamescoretracker.api.user.database.User;
 import io.jsonwebtoken.Claims;

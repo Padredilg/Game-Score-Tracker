@@ -1,4 +1,4 @@
-package com.cen4010.gamescoretracker.exceptions;
+package com.cen4010.gamescoretracker.utils.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

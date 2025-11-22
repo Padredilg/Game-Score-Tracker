@@ -2,7 +2,6 @@ package com.cen4010.gamescoretracker.security;
 
 import com.cen4010.gamescoretracker.api.user.database.User;
 import com.cen4010.gamescoretracker.api.user.database.UserRepository;
-import com.cen4010.gamescoretracker.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

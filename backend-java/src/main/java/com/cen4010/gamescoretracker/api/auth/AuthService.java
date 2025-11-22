@@ -6,12 +6,12 @@ import com.cen4010.gamescoretracker.api.auth.dto.LoginResponse;
 import com.cen4010.gamescoretracker.api.auth.dto.RegisterRequest;
 import com.cen4010.gamescoretracker.api.user.UserMapper;
 import com.cen4010.gamescoretracker.api.user.dto.UserDTO;
-import com.cen4010.gamescoretracker.exceptions.EntityExistsException;
-import com.cen4010.gamescoretracker.exceptions.InvalidCredentialsException;
+import com.cen4010.gamescoretracker.utils.exceptions.EntityExistsException;
+import com.cen4010.gamescoretracker.utils.exceptions.InvalidCredentialsException;
 import com.cen4010.gamescoretracker.api.user.database.User;
 import com.cen4010.gamescoretracker.api.user.database.UserRepository;
 import com.cen4010.gamescoretracker.api.group.GroupService;
-import com.cen4010.gamescoretracker.util.JwtUtil;
+import com.cen4010.gamescoretracker.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
