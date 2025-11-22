@@ -1,6 +1,6 @@
 package com.cen4010.gamescoretracker.util;
 
-import com.cen4010.gamescoretracker.models.User;
+import com.cen4010.gamescoretracker.api.user.database.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
