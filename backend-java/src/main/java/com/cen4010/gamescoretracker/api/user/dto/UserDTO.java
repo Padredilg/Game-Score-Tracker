@@ -1,20 +1,22 @@
 package com.cen4010.gamescoretracker.api.user.dto;
 
+import com.cen4010.gamescoretracker.api.user.database.User;
 import lombok.*;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserDTO {
     private UUID userId;
     private String username;
-    private String role;
+    private User.Role role;
     private String groupCode;
-    private Integer victories;
-    private Integer matchesPlayed;
-    private Integer defeats;
-    private Integer cumulativeScore;
-    private Integer highestScore;
+    private String avatarUrl;
+    private int victories;
+    private int defeats;
+    private int matchesPlayed;
+    private int cumulativeScore;
+    private int highestScore;
 }

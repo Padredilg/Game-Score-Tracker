@@ -4,6 +4,7 @@ package com.cen4010.gamescoretracker.api.auth;
 import com.cen4010.gamescoretracker.api.auth.dto.LoginRequest;
 import com.cen4010.gamescoretracker.api.auth.dto.LoginResponse;
 import com.cen4010.gamescoretracker.api.auth.dto.RegisterRequest;
+import com.cen4010.gamescoretracker.api.user.UserMapper;
 import com.cen4010.gamescoretracker.api.user.dto.UserDTO;
 import com.cen4010.gamescoretracker.exceptions.EntityExistsException;
 import com.cen4010.gamescoretracker.exceptions.InvalidCredentialsException;
@@ -44,7 +45,7 @@ public class AuthService {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapToUserDTO(savedUser));
+                .body(UserMapper.toDTO(savedUser));
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
@@ -60,7 +61,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user);
-        LoginResponse response = new LoginResponse(token, mapToUserDTO(user));
+        LoginResponse response = new LoginResponse(token, UserMapper.toDTO(user));
 
         return ResponseEntity.ok(response);
     }
@@ -90,20 +91,6 @@ public class AuthService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password cannot be null or empty.");
         }
-    }
-
-    private UserDTO mapToUserDTO(User savedUser) {
-        return UserDTO.builder()
-                .userId(savedUser.getUserId())
-                .username(savedUser.getUsername())
-                .role(savedUser.getRole().name())
-                .groupCode(savedUser.getGroupCode())
-                .victories(savedUser.getVictories())
-                .matchesPlayed(savedUser.getMatchesPlayed())
-                .defeats(savedUser.getDefeats())
-                .cumulativeScore(savedUser.getCumulativeScore())
-                .highestScore(savedUser.getHighestScore())
-                .build();
     }
 
 
