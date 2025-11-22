@@ -1,0 +1,47 @@
+<div class="page">
+  <div class="card">
+    <div class="logo">
+      <span>GS</span>
+    </div>
+
+    <h1 class="title">Player Login</h1>
+    <p class="subtitle">Sign in to access the dashboard</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <label class="field">
+        <span class="label">Username</span>
+        <input type="text"
+               placeholder="Enter your username"
+               formControlName="username"
+               [class.invalid]="f['username'].touched && f['username'].invalid" />
+        <small *ngIf="f['username'].touched && f['username'].invalid" class="error">
+          Username is required (min 3 chars).
+        </small>
+      </label>
+
+      <label class="field">
+        <span class="label">Password</span>
+        <input type="password"
+               placeholder="Enter your password"
+               formControlName="password"
+               [class.invalid]="f['password'].touched && f['password'].invalid" />
+        <small *ngIf="f['password'].touched && f['password'].invalid" class="error">
+          Password is required (min 4 chars).
+        </small>
+      </label>
+
+      <button class="primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Signing In…' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="footnote">
+      Don't have an account?
+      <a routerLink="/register" class="link">Create Account</a>
+    </p>
+  </div>
+
+  <footer class="copyright">
+    © 2025 Game Score Tracker
+  </footer>
+</div>
