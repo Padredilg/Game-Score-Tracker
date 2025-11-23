@@ -1,0 +1,77 @@
+<div class="page">
+  <div class="card">
+    <div class="logo">
+      <span>GS</span>
+    </div>
+
+    <h1 class="title">Create Account</h1>
+    <p class="subtitle">Set up your new account</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Admin toggle block -->
+      <div class="admin-toggle">
+        <div class="admin-text">
+          <div class="admin-title">Admin Account</div>
+          <div class="admin-subtitle">Grant admin privileges</div>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" formControlName="isAdmin" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Username -->
+      <label class="field">
+        <span class="label">Username</span>
+        <input type="text"
+               placeholder="Choose a username"
+               formControlName="username"
+               [class.invalid]="f['username'].touched && f['username'].invalid" />
+        <small *ngIf="f['username'].touched && f['username'].invalid" class="error">
+          Username is required (min 3 characters).
+        </small>
+      </label>
+
+      <!-- Password -->
+      <label class="field">
+        <span class="label">Password</span>
+        <input type="password"
+               placeholder="Create a password"
+               formControlName="password"
+               [class.invalid]="f['password'].touched && f['password'].invalid || passwordMismatch()" />
+        <small *ngIf="f['password'].touched && f['password'].invalid" class="error">
+          Password is required (min 4 characters).
+        </small>
+      </label>
+
+      <!-- Confirm password -->
+      <label class="field">
+        <span class="label">Verify Password</span>
+        <input type="password"
+               placeholder="Re-enter your password"
+               formControlName="confirmPassword"
+               [class.invalid]="f['confirmPassword'].touched && f['confirmPassword'].invalid || passwordMismatch()" />
+        <small *ngIf="f['confirmPassword'].touched && f['confirmPassword'].invalid" class="error">
+          Please confirm your password.
+        </small>
+        <small *ngIf="passwordMismatch()" class="error">
+          Passwords do not match.
+        </small>
+      </label>
+
+      <button class="primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Creating Account…' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="footnote">
+      Already have an account?
+      <a routerLink="/login" class="link">Sign In</a>
+    </p>
+  </div>
+
+  <footer class="copyright">
+    © 2025 Game Score Tracker
+  </footer>
+</div>
