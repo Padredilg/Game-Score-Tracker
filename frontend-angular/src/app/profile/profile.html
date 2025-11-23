@@ -1,0 +1,135 @@
+<div class="app-shell">
+  <!-- Top white header -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">GS</div>
+      <div class="brand-text">
+        <div class="brand-title">Volleyball</div>
+        <div class="brand-subtitle">Game Score Management</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="top-btn ghost" (click)="onBackToDashboard()">
+        Back to Dashboard
+      </button>
+      <button class="top-btn danger" (click)="onSignOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <section class="profile-card">
+      <!-- Dark gradient header -->
+      <div class="profile-header">
+        <div class="profile-header-inner">
+          <div class="avatar-block">
+            <div class="avatar-wrapper">
+              <div class="avatar-outline">
+                <div class="avatar-icon">👤</div>
+              </div>
+
+              <!-- EDIT BUTTON AT TOP -->
+              <button class="avatar-edit"
+                      type="button"
+                      (click)="onEditProfilePhoto()"
+                      aria-label="Edit profile picture">
+                ✎
+              </button>
+            </div>
+
+            <div class="user-text">
+              <div class="user-name">{{ username }}</div>
+              <div class="user-handle">{{ handle }}</div>
+
+              <div class="user-tags-row">
+                <div class="user-tags">
+                  <span class="tag tag-soft">{{ role }}</span>
+                  <span class="tag tag-green">{{ status }}</span>
+                  <span class="tag tag-ghost">
+                    <span class="tag-icon">🕒</span>
+                    {{ memberSince }}
+                  </span>
+                </div>
+
+                <button class="header-btn"
+                        type="button"
+                        (click)="onChangePassword()">
+                  <span class="header-btn-icon">🔒</span>
+                  <span>Change Password</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GREY LINE BETWEEN HEADER AND BODY -->
+      <div class="profile-divider"></div>
+
+      <!-- Body -->
+      <div class="profile-body">
+        <!-- Statistics section -->
+        <section class="stats-section">
+          <div class="section-header">
+            <div class="section-title-left">
+              <span class="section-icon">📊</span>
+              <h2 class="section-title">Statistics</h2>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card stat-blue">
+              <div class="stat-label">
+                <span class="stat-icon">🎮</span>
+                <span>Games Played</span>
+              </div>
+              <div class="stat-value">{{ gamesPlayed }}</div>
+            </div>
+
+            <div class="stat-card stat-green">
+              <div class="stat-label">
+                <span class="stat-icon">🏆</span>
+                <span>Total Wins</span>
+              </div>
+              <div class="stat-value">{{ totalWins }}</div>
+            </div>
+
+            <div class="stat-card stat-gold">
+              <div class="stat-label">
+                <span class="stat-icon">🎯</span>
+                <span>Win Rate</span>
+              </div>
+              <div class="stat-value">{{ winRate }}%</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recent activity -->
+        <section class="activity-section">
+          <div class="section-header">
+            <div class="section-title-left">
+              <h2 class="section-title">Recent Activity</h2>
+            </div>
+          </div>
+
+          <div class="activity-list">
+            <!-- EACH ACTIVITY IS ITS OWN RECTANGLE CARD -->
+            <article class="activity-card" *ngFor="let a of activities">
+              <div class="activity-main">
+                <div class="activity-title">{{ a.result }}</div>
+                <div class="activity-subtitle">{{ a.score }}</div>
+              </div>
+
+              <div class="activity-meta">
+                <div class="activity-when">{{ a.when }}</div>
+                <button class="activity-delete" type="button" aria-label="Delete activity">
+                  🗑
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>

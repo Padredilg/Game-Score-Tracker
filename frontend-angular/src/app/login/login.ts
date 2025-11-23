@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -14,7 +14,7 @@ export class LoginComponent {
   form: FormGroup;
   submitting = signal(false);
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -30,8 +30,10 @@ export class LoginComponent {
     }
     this.submitting.set(true);
 
-    console.log('Login payload:', this.form.value);
-    alert('Signed in! (hook up to your backend when ready)');
+    // TODO: replace this with real backend login call
+    await new Promise(r => setTimeout(r, 800));
+
     this.submitting.set(false);
+    this.router.navigate(['/profile']);
   }
 }
