@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { JoinGroupComponent } from './join-group/join-group.component';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,8 @@ export const routes: Routes = [
     path: 'profile',
     loadComponent: () => import('./profile/profile').then(m => m.ProfileComponent)
   },
+  { path: '', redirectTo: 'join-group', pathMatch: 'full' },
+  { path: 'join-group', component: JoinGroupComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', redirectTo: 'login' }
 ];
