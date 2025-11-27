@@ -11,6 +11,7 @@ import java.util.UUID;
 public class UserDTO {
     private UUID userId;
     private String username;
+    private String nickname;
     private User.Role role;
     private String groupCode;
     private String avatarUrl;
