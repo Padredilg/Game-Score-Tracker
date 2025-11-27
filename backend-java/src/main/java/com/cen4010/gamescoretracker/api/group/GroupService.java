@@ -68,10 +68,7 @@ public class GroupService {
 
     // Toggle column visibilities
     public Group toggleVisibility(User admin, GroupVisibilityRequest request) {
-        Group group = admin.getGroup();
-        if (isNotAdmin(admin, group)) {
-            throw new ForbiddenAccessException("User is not admin of the group");
-        }
+        Group group = requireAdminGroup(admin);
 
         //WinPercentageVisibility
         if (request.getWinPercentageVisibility() != null)
@@ -100,10 +97,7 @@ public class GroupService {
 
     // Edit group name
     public Group editGroupName(User admin, GroupEditNameRequest request) {
-        Group group = admin.getGroup();
-        if (isNotAdmin(admin, group)) {
-            throw new ForbiddenAccessException("User is not admin of the group");
-        }
+        Group group = requireAdminGroup(admin);
 
         group.setGroupName(request.getGroupName());
         groupRepository.save(group);
@@ -112,18 +106,19 @@ public class GroupService {
 
     // Open/close group for new members
     public Group manageGroup(User admin, GroupManageRequest request) {
-        Group group = admin.getGroup();
-        if (isNotAdmin(admin, group)) {
-            throw new ForbiddenAccessException("User is not admin of the group");
-        }
+        Group group = requireAdminGroup(admin);
 
         group.setOpenForNewMembers(request.getOpenForNewMembers());
         groupRepository.save(group);
         return group;
     }
 
-    private boolean isNotAdmin(User user, Group group) {
-        return group == null || !group.getAdmin().getUserId().equals(user.getUserId());
+    private Group requireAdminGroup(User user) {
+        Group group = user.getGroup();
+        if (group == null || !group.getAdmin().getUserId().equals(user.getUserId())) {
+            throw new ForbiddenAccessException("User is not admin of the group");
+        }
+        return group;
     }
 
     public List<GroupDTO> getAllGroupDTOs() {

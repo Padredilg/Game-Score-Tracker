@@ -12,6 +12,7 @@ public class GroupDTO {
     private UUID groupId;
     private String groupCode;
     private String groupName;
+    private String groupAdmin;
     private List<String> usernames;
     private Boolean openForNewMembers;
     private Boolean winPercentageVisibility;

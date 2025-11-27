@@ -17,6 +17,7 @@ public class GroupMapper {
                 .groupId(group.getGroupId())
                 .groupCode(group.getGroupCode())
                 .groupName(group.getGroupName())
+                .groupAdmin(group.getAdmin().getUsername())
                 .usernames(group.getUsers()
                         .stream()
                         .map(User::getUsername)
