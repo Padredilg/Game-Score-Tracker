@@ -39,6 +39,9 @@ public class Group {
     @ToString.Exclude
     private User admin;
 
+    @Builder.Default
+    private boolean openForNewMembers = true;
+
     // Visibility settings – all default to true
     @Builder.Default
     private boolean winPercentageVisibility = true;
