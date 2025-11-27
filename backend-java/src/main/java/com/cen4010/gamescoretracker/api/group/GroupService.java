@@ -2,9 +2,13 @@ package com.cen4010.gamescoretracker.api.group;
 
 import com.cen4010.gamescoretracker.api.group.dto.GroupDTO;
 import com.cen4010.gamescoretracker.api.group.database.Group;
+import com.cen4010.gamescoretracker.api.group.dto.GroupEditNameRequest;
+import com.cen4010.gamescoretracker.api.group.dto.GroupManageRequest;
+import com.cen4010.gamescoretracker.api.group.dto.GroupVisibilityRequest;
 import com.cen4010.gamescoretracker.api.user.database.User;
 import com.cen4010.gamescoretracker.api.group.database.GroupRepository;
 import com.cen4010.gamescoretracker.api.user.database.UserRepository;
+import com.cen4010.gamescoretracker.utils.exceptions.ForbiddenAccessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +46,7 @@ public class GroupService {
         userRepository.save(adminUser);
     }
 
-    public void joinGroup(User user, String groupCode) {
+    public User joinGroup(User user, String groupCode) {
         Group group = groupRepository.findByGroupCode(groupCode)
                 .orElseThrow(() -> new IllegalArgumentException("Group with code " + groupCode + " does not exist"));
 
@@ -59,11 +63,68 @@ public class GroupService {
         group.getUsers().add(user);
 
         // Save the updated user
-        userRepository.save(user);
-
-        log.info("User {} joined group {}", user.getUsername(), groupCode);
+        return userRepository.save(user);
     }
 
+    // Toggle column visibilities
+    public Group toggleVisibility(User admin, GroupVisibilityRequest request) {
+        Group group = admin.getGroup();
+        if (isNotAdmin(admin, group)) {
+            throw new ForbiddenAccessException("User is not admin of the group");
+        }
+
+        //WinPercentageVisibility
+        if (request.getWinPercentageVisibility() != null)
+            group.setWinPercentageVisibility(request.getWinPercentageVisibility());
+        //MatchesPlayedVisibility
+        if (request.getMatchesPlayedVisibility() != null)
+            group.setMatchesPlayedVisibility(request.getMatchesPlayedVisibility());
+        //VictoriesVisibility
+        if (request.getVictoriesVisibility() != null)
+            group.setVictoriesVisibility(request.getVictoriesVisibility());
+        //DefeatsVisibility
+        if (request.getDefeatsVisibility() != null)
+            group.setDefeatsVisibility(request.getDefeatsVisibility());
+        //CumulativeScoreVisibility
+        if (request.getCumulativeScoreVisibility() != null)
+            group.setCumulativeScoreVisibility(request.getCumulativeScoreVisibility());
+        //HighestScoreVisibility
+        if (request.getHighestScoreVisibility() != null)
+            group.setHighestScoreVisibility(request.getHighestScoreVisibility());
+
+
+        groupRepository.save(group);
+        return group;
+    }
+
+
+    // Edit group name
+    public Group editGroupName(User admin, GroupEditNameRequest request) {
+        Group group = admin.getGroup();
+        if (isNotAdmin(admin, group)) {
+            throw new ForbiddenAccessException("User is not admin of the group");
+        }
+
+        group.setGroupName(request.getGroupName());
+        groupRepository.save(group);
+        return group;
+    }
+
+    // Open/close group for new members
+    public Group manageGroup(User admin, GroupManageRequest request) {
+        Group group = admin.getGroup();
+        if (isNotAdmin(admin, group)) {
+            throw new ForbiddenAccessException("User is not admin of the group");
+        }
+
+        group.setOpenForNewMembers(request.getOpenForNewMembers());
+        groupRepository.save(group);
+        return group;
+    }
+
+    private boolean isNotAdmin(User user, Group group) {
+        return group == null || !group.getAdmin().getUserId().equals(user.getUserId());
+    }
 
     public List<GroupDTO> getAllGroupDTOs() {
         return groupRepository.findAll().stream()
