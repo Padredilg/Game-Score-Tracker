@@ -26,6 +26,7 @@ public class GroupService {
     private static final String ALLOWED = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
 
+    // Generate new group for new Admin user
     public void createGroupForAdmin(User adminUser) {
         String groupCode = generateUniqueGroupCode();
 
@@ -46,6 +47,7 @@ public class GroupService {
         userRepository.save(adminUser);
     }
 
+    // Regular user join group request
     public User joinGroup(User user, String groupCode) {
         Group group = groupRepository.findByGroupCode(groupCode)
                 .orElseThrow(() -> new IllegalArgumentException("Group with code " + groupCode + " does not exist"));
@@ -53,6 +55,11 @@ public class GroupService {
         // Check if user is already in a group
         if (user.getGroup() != null) {
             throw new IllegalArgumentException("User is already part of a group");
+        }
+
+        //check if group is accepting new members
+        if(!group.isOpenForNewMembers()){
+            throw new ForbiddenAccessException("Group is not accepting new members at the moment.");
         }
 
         // Link user to the group
@@ -94,7 +101,6 @@ public class GroupService {
         return group;
     }
 
-
     // Edit group name
     public Group editGroupName(User admin, GroupEditNameRequest request) {
         Group group = requireAdminGroup(admin);
@@ -113,6 +119,7 @@ public class GroupService {
         return group;
     }
 
+
     private Group requireAdminGroup(User user) {
         Group group = user.getGroup();
         if (group == null || !group.getAdmin().getUserId().equals(user.getUserId())) {
@@ -120,6 +127,17 @@ public class GroupService {
         }
         return group;
     }
+
+    private String generateUniqueGroupCode() {
+        String code;
+        do {
+            code = random.ints(6, 0, ALLOWED.length())
+                    .mapToObj(i -> String.valueOf(ALLOWED.charAt(i)))
+                    .reduce("", String::concat);
+        } while (groupRepository.existsByGroupCode(code));
+        return code;
+    }
+
 
     public List<GroupDTO> getAllGroupDTOs() {
         return groupRepository.findAll().stream()
@@ -135,16 +153,5 @@ public class GroupService {
                         .build()
                 )
                 .toList();
-    }
-
-
-    private String generateUniqueGroupCode() {
-        String code;
-        do {
-            code = random.ints(6, 0, ALLOWED.length())
-                    .mapToObj(i -> String.valueOf(ALLOWED.charAt(i)))
-                    .reduce("", String::concat);
-        } while (groupRepository.existsByGroupCode(code));
-        return code;
     }
 }

@@ -20,6 +20,39 @@ public class GroupController {
     private final GroupService groupService;
     private final UserService userService;
 
+    // FOR REGULAR USER TO JOIN GROUP
+    @PostMapping("/join")
+    public ResponseEntity<UserDTO> joinGroup(@RequestBody JoinGroupRequest request) {
+        User currentUser = userService.getCurrentUser();
+        var updatedUser = groupService.joinGroup(currentUser, request.getGroupCode());
+        return ResponseEntity.ok(UserMapper.toDTO(updatedUser));
+    }
+
+    // UPDATE GROUP COLUMN VISIBILITY
+    @PutMapping("/togglevisibility")
+    public ResponseEntity<GroupDTO> toggleVisibility(@RequestBody GroupVisibilityRequest request) {
+        User currentUser = userService.getCurrentUser();
+        var updatedGroup = groupService.toggleVisibility(currentUser, request);
+        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
+    }
+
+    // UPDATE GROUP'S NAME
+    @PutMapping("/editname")
+    public ResponseEntity<GroupDTO> editGroupName(@RequestBody GroupEditNameRequest request) {
+        User currentUser = userService.getCurrentUser();
+        var updatedGroup = groupService.editGroupName(currentUser, request);
+        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
+    }
+
+    // OPEN/CLOSE GROUP FOR NEW MEMBERS
+    @PutMapping("/manage")
+    public ResponseEntity<GroupDTO> manageGroup(@RequestBody GroupManageRequest request) {
+        User currentUser = userService.getCurrentUser();
+        var updatedGroup = groupService.manageGroup(currentUser, request);
+        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
+    }
+
+
     //Retrieve all existing groups (not for app)
     @GetMapping("/all")
     public ResponseEntity<?> getAllGroups() {
@@ -30,36 +63,6 @@ public class GroupController {
         }
 
         return ResponseEntity.ok(groups);
-    }
-
-    // FOR REGULAR USER TO JOIN GROUP
-    @PostMapping("/join")
-    public ResponseEntity<UserDTO> joinGroup(@RequestBody JoinGroupRequest request) {
-        User currentUser = userService.getCurrentUser();
-        var updatedUser = groupService.joinGroup(currentUser, request.getGroupCode());
-        return ResponseEntity.ok(UserMapper.toDTO(updatedUser));
-    }
-
-
-    @PutMapping("/togglevisibility")
-    public ResponseEntity<GroupDTO> toggleVisibility(@RequestBody GroupVisibilityRequest request) {
-        User currentUser = userService.getCurrentUser();
-        var updatedGroup = groupService.toggleVisibility(currentUser, request);
-        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
-    }
-
-    @PutMapping("/editname")
-    public ResponseEntity<GroupDTO> editGroupName(@RequestBody GroupEditNameRequest request) {
-        User currentUser = userService.getCurrentUser();
-        var updatedGroup = groupService.editGroupName(currentUser, request);
-        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
-    }
-
-    @PutMapping("/manage")
-    public ResponseEntity<GroupDTO> manageGroup(@RequestBody GroupManageRequest request) {
-        User currentUser = userService.getCurrentUser();
-        var updatedGroup = groupService.manageGroup(currentUser, request);
-        return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
     }
 
 }
