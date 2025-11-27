@@ -15,21 +15,28 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handles validation errors
+    // IMPROPER REQUEST BODY
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    // Handles custom bad request errors
+    // TRYING TO REGISTER DUPLICATE USERNAME
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Map<String, Object>> handleEntityExists(EntityExistsException ex) {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    // LOGIN WITH WRONG USERNAME OR PASSWORD
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    // TRYING TO RETRIEVE DATA WITHOUT ACCESS
+    @ExceptionHandler(ForbiddenAccessException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(ForbiddenAccessException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message) {

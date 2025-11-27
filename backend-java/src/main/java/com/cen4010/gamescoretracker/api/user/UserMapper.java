@@ -11,6 +11,7 @@ public class UserMapper {
         return UserDTO.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
+                .nickname(user.getNickname())
                 .role(user.getRole())
                 .groupCode(user.getGroupCode())
                 .avatarUrl(user.getAvatarUrl())
