@@ -8,6 +8,7 @@ import com.cen4010.gamescoretracker.api.match.database.MatchRepository;
 import com.cen4010.gamescoretracker.api.match.database.MatchScoreRepository;
 import com.cen4010.gamescoretracker.api.match.dto.MatchCreateRequest;
 import com.cen4010.gamescoretracker.api.match.dto.MatchReportDTO;
+import com.cen4010.gamescoretracker.api.match.dto.UserMatchesDTO;
 import com.cen4010.gamescoretracker.api.user.UserService;
 import com.cen4010.gamescoretracker.api.user.database.User;
 
@@ -20,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class MatchService {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
+    //Save Match and Scores to DB
     @Transactional
     public MatchReportDTO recordMatch(MatchCreateRequest request) {
 
@@ -66,17 +67,33 @@ public class MatchService {
         return MatchMapper.toReportDto(savedMatch, savedScores, updatedUsers);
     }
 
-    public List<MatchReportDTO> getMatchesForUser(UUID userId) {
-        List<MatchScore> scores = matchScoreRepository.findByUserUserIdOrderByMatchMatchDateDesc(userId);
+    //retrieve matches by user id
+    public UserMatchesDTO getUserMatches(UUID userId) {
 
-        return scores.stream()
+        // Fetch all MatchScore records for this user.
+        List<MatchScore> userScores =
+                matchScoreRepository.findByUserUserIdOrderByMatchMatchDateDesc(userId);
+
+        // Convert each MatchScore into a UserMatchItemDTO.
+        // Because one MatchScore = the user's participation in a single match,
+        // we can derive the match + all participants from it.
+        List<UserMatchesDTO.UserMatchItemDTO> dtoList = userScores.stream()
                 .map(ms -> {
-                    // Single match report: include match, all scores for that match, updated user snapshot is optional
-                    List<MatchScore> allScores = ms.getMatch().getMatchScores().stream().toList();
-                    List<User> updatedUsers = allScores.stream().map(MatchScore::getUser).toList();
-                    return MatchMapper.toReportDto(ms.getMatch(), allScores, updatedUsers);
+                    Match match = ms.getMatch();
+                    List<MatchScore> allScores = match.getMatchScores().stream().toList();
+
+                    return MatchMapper.toUserMatchItemDTO(
+                            match,
+                            userId,
+                            allScores
+                    );
                 })
-                .collect(Collectors.toList());
+                .toList();
+
+        // Wrap the results in the parent DTO object
+        return UserMatchesDTO.builder()
+                .matches(dtoList)
+                .build();
     }
 
     // --------------------------------------------------------------

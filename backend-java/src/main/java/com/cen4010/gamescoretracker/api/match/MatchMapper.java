@@ -3,10 +3,13 @@ package com.cen4010.gamescoretracker.api.match;
 import com.cen4010.gamescoretracker.api.match.database.Match;
 import com.cen4010.gamescoretracker.api.match.database.MatchScore;
 import com.cen4010.gamescoretracker.api.match.dto.MatchReportDTO;
+import com.cen4010.gamescoretracker.api.match.dto.UserMatchesDTO;
 import com.cen4010.gamescoretracker.api.user.UserMapper;
 import com.cen4010.gamescoretracker.api.user.database.User;
+import com.cen4010.gamescoretracker.api.user.dto.UserDTO;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MatchMapper {
@@ -48,6 +51,45 @@ public class MatchMapper {
                 .username(s.getUser().getUsername())
                 .score(s.getScore())
                 .role(s.getRole().name())
+                .build();
+    }
+
+    public static UserMatchesDTO.UserMatchItemDTO toUserMatchItemDTO(Match match,
+                                                                     UUID targetUserId,
+                                                                     List<MatchScore> allScores) {
+
+        // Identify THIS user's participant row
+        MatchScore myScore = allScores.stream()
+                .filter(ms -> ms.getUser().getUserId().equals(targetUserId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("User did not participate in this match"));
+
+        List<UserDTO> winners = allScores.stream()
+                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.WINNER)
+                .map(MatchScore::getUser)
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
+
+        List<UserDTO> losers = allScores.stream()
+                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.LOSER)
+                .map(MatchScore::getUser)
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
+
+        List<UserDTO> ties = allScores.stream()
+                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.TIE)
+                .map(MatchScore::getUser)
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return UserMatchesDTO.UserMatchItemDTO.builder()
+                .matchId(match.getMatchId())
+                .matchDate(match.getMatchDate())
+                .result(match.getResult().name())
+                .playerRole(myScore.getRole().name())
+                .winners(winners)
+                .losers(losers)
+                .ties(ties)
                 .build();
     }
 
