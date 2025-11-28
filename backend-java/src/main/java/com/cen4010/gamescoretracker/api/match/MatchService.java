@@ -102,7 +102,11 @@ public class MatchService {
         if (request.getWinners() != null) {
             for (var entry : request.getWinners().entrySet()) {
                 User user = getUser(entry.getKey());
-                scores.add(buildMatchScore(match, user, entry.getValue(), MatchScore.PlayerRole.WINNER));
+                // If match is a draw, winners get TIE
+                MatchScore.PlayerRole role = request.getResult().equalsIgnoreCase("draw")
+                        ? MatchScore.PlayerRole.TIE
+                        : MatchScore.PlayerRole.WINNER;
+                scores.add(buildMatchScore(match, user, entry.getValue(), role));
             }
         }
 
@@ -110,13 +114,9 @@ public class MatchService {
         if (request.getLosers() != null) {
             for (var entry : request.getLosers().entrySet()) {
                 User user = getUser(entry.getKey());
+                // Losers always remain LOSER, even in a draw
                 scores.add(buildMatchScore(match, user, entry.getValue(), MatchScore.PlayerRole.LOSER));
             }
-        }
-
-        // If DRAW → everyone is TIE
-        if (request.getResult().equalsIgnoreCase("draw")) {
-            scores.forEach(s -> s.setRole(MatchScore.PlayerRole.TIE));
         }
 
         return scores;
