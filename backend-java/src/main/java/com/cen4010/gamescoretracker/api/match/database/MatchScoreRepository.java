@@ -10,4 +10,6 @@ public interface MatchScoreRepository extends JpaRepository<MatchScore, UUID> {
     List<MatchScore> findByMatchMatchId(UUID matchId);
 
     void deleteByMatch_MatchId(UUID matchId);
+
+    List<MatchScore> findByUserUserIdOrderByMatchMatchDateDesc(UUID userId);
 }

@@ -4,10 +4,10 @@ import com.cen4010.gamescoretracker.api.match.dto.MatchCreateRequest;
 import com.cen4010.gamescoretracker.api.match.dto.MatchReportDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/matches")
@@ -19,5 +19,11 @@ public class MatchesController {
     @PostMapping("/add")
     public ResponseEntity<MatchReportDTO> addMatch(@RequestBody MatchCreateRequest request) {
         return ResponseEntity.ok(matchService.recordMatch(request));
+    }
+
+    @GetMapping("/user/{userId}") //TODO -- UPDATE RETURN OBJECT TO BE MORE TAILORED FOR THIS SPECIFIC ENDPOINT
+    public ResponseEntity<List<MatchReportDTO>> getMatchesForUser(@PathVariable UUID userId) {
+        List<MatchReportDTO> matches = matchService.getMatchesForUser(userId);
+        return ResponseEntity.ok(matches);
     }
 }

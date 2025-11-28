@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,19 @@ public class MatchService {
         );
 
         return MatchMapper.toReportDto(savedMatch, savedScores, updatedUsers);
+    }
+
+    public List<MatchReportDTO> getMatchesForUser(UUID userId) {
+        List<MatchScore> scores = matchScoreRepository.findByUserUserIdOrderByMatchMatchDateDesc(userId);
+
+        return scores.stream()
+                .map(ms -> {
+                    // Single match report: include match, all scores for that match, updated user snapshot is optional
+                    List<MatchScore> allScores = ms.getMatch().getMatchScores().stream().toList();
+                    List<User> updatedUsers = allScores.stream().map(MatchScore::getUser).toList();
+                    return MatchMapper.toReportDto(ms.getMatch(), allScores, updatedUsers);
+                })
+                .collect(Collectors.toList());
     }
 
     // --------------------------------------------------------------
