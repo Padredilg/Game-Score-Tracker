@@ -1,4 +1,4 @@
-package com.cen4010.gamescoretracker.api.matchscore.database;
+package com.cen4010.gamescoretracker.api.match.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

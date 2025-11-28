@@ -1,7 +1,6 @@
 package com.cen4010.gamescoretracker.api.match.database;
 
 import com.cen4010.gamescoretracker.api.group.database.Group;
-import com.cen4010.gamescoretracker.api.matchscore.database.MatchScore;
 import com.cen4010.gamescoretracker.api.user.database.User;
 import jakarta.persistence.*;
 import lombok.*;

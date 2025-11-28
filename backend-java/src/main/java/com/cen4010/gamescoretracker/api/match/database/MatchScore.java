@@ -1,6 +1,5 @@
-package com.cen4010.gamescoretracker.api.matchscore.database;
+package com.cen4010.gamescoretracker.api.match.database;
 
-import com.cen4010.gamescoretracker.api.match.database.Match;
 import com.cen4010.gamescoretracker.api.user.database.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +40,6 @@ public class MatchScore {
     private PlayerRole role;
 
     public enum PlayerRole {
-        WINNER, LOSER
+        WINNER, LOSER, TIE
     }
 }
