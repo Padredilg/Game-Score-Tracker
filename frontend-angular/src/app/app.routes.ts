@@ -14,8 +14,11 @@ export const routes: Routes = [
     path: 'profile',
     loadComponent: () => import('./profile/profile').then(m => m.ProfileComponent)
   },
-  { path: '', redirectTo: 'join-group', pathMatch: 'full' },
+  {
+    path: 'main-dashboard',
+    loadComponent: () => import('./main-dashboard/main-dashboard').then(m => m.MainDashboard)
+  },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'join-group', component: JoinGroupComponent },
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', redirectTo: 'login' }
 ];

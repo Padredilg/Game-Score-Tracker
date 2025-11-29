@@ -1,0 +1,49 @@
+<div class="table-container">
+    <table class="leaderboard-table">
+        <thead class="leaderboard-title">Leaderboard</thead>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>Win %</th>
+                <th>Total Wins</th>
+                <th>Games Played</th>
+                <th>Total Points</th>
+                <th>Highest Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (player of players(); track $index) {
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td class="player-cell">
+                    <div class="player-info">
+                        <div class="avatar" [style.background-color]="player.color">
+                            {{ player.initials }}
+                        </div>
+                        <div class="player-details">
+                            <div class="player-name">{{ player.name }}</div>
+                            <div class="player-handle">@{{ player.name }}</div>
+                        </div>
+
+                    </div>
+                </td>
+                <td>{{ player.winPercent }}%</td>
+                <td>{{ player.totalWins }}</td>
+                <td>{{ player.gamesPlayed }}</td>
+                <td>{{ player.totalPoints }}</td>
+                <td class="highlight">{{ player.highestScore }}</td>
+                @if (isAdmin()) {
+                <td>
+                    <button mat-icon-button color="warn" class="delete-btn" (click)="deletePlayer(player)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+                }
+
+            </tr>
+            }
+        </tbody>
+    </table>
+    <p class="player-count">Total Players: {{ players().length }}</p>
+</div>
