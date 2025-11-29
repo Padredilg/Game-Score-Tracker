@@ -3,6 +3,7 @@ package com.cen4010.gamescoretracker.api.match;
 import com.cen4010.gamescoretracker.api.match.dto.MatchCreateRequest;
 import com.cen4010.gamescoretracker.api.match.dto.MatchReportDTO;
 import com.cen4010.gamescoretracker.api.match.dto.UserMatchesDTO;
+import com.cen4010.gamescoretracker.utils.requireadmin.RequireAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class MatchesController {
         return ResponseEntity.ok(dto);
     }
 
+    @RequireAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMatch(@PathVariable UUID id) {
         matchService.deleteMatch(id);
