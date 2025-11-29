@@ -169,33 +169,6 @@ public class MatchService {
     }
 
 
-    private static User removeUserScoreStats(MatchScore ms) {
-        User user = ms.getUser();
-
-        // Subtract matches played
-        user.setMatchesPlayed(user.getMatchesPlayed() - 1);
-
-        // Subtract cumulative score
-        user.setCumulativeScore(user.getCumulativeScore() - ms.getScore());
-
-        // Reverse role-based stats
-        switch (ms.getRole()) {
-            case WINNER -> user.setVictories(user.getVictories() - 1);
-            case LOSER -> user.setDefeats(user.getDefeats() - 1);
-            case TIE -> user.setDraws(user.getDraws() - 1);
-        }
-
-        // Highest score consideration (just log for now)
-        if (ms.getScore() == user.getHighestScore()) {
-            System.out.println("Highest score removed for user " + user.getUsername()
-                    + ". Recalculation needed in future.");
-            // Future fix: recompute highest score across user's remaining MatchScores
-        }
-
-        return user;
-    }
-
-
     // --------------------------------------------------------------
     // --------------------- Helper Methods -------------------------
     // --------------------------------------------------------------
