@@ -96,6 +96,106 @@ public class MatchService {
                 .build();
     }
 
+    @Transactional
+    public void deleteMatch(UUID matchId) {
+
+        // Load the match
+        Match match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new IllegalArgumentException("Match not found: " + matchId));
+
+        // Load ALL MatchScores for this match
+        List<MatchScore> scores = matchScoreRepository.findByMatchMatchId(matchId);
+
+        if (scores.isEmpty()) {
+            matchRepository.delete(match);
+            return;
+        }
+
+        // Remove all MatchScores
+        matchScoreRepository.deleteAll(scores);
+
+        // Remove the match
+        matchRepository.delete(match);
+
+
+        // Track affected users
+        Set<User> affectedUsers = getReversedStatsUsers(scores);
+
+        // Save updated users first
+        userRepository.saveAll(affectedUsers);
+    }
+
+    private Set<User> getReversedStatsUsers(List<MatchScore> scores) {
+        Set<User> affectedUsers = new HashSet<>();
+
+        for (MatchScore ms : scores) {
+            User user = ms.getUser();
+            affectedUsers.add(user);
+
+            // Reverse stats ----------------------------
+
+            user.setMatchesPlayed(user.getMatchesPlayed() - 1);
+            user.setCumulativeScore(user.getCumulativeScore() - ms.getScore());
+
+            switch (ms.getRole()) {
+                case WINNER -> user.setVictories(user.getVictories() - 1);
+                case LOSER -> user.setDefeats(user.getDefeats() - 1);
+                case TIE -> user.setDraws(user.getDraws() - 1);
+            }
+
+            // Highest score recalculation --------------
+            if (ms.getScore() == user.getHighestScore()) {
+                System.out.println("Recalculating highest score for user: " + user.getUsername());
+
+                // Query all remaining MatchScores for this user (AFTER this match)
+                List<MatchScore> remainingScores =
+                        matchScoreRepository.findByUserUserId(user.getUserId());
+
+                if (remainingScores.isEmpty()) {
+                    // User now has no remaining match history
+                    user.setHighestScore(0);
+                } else {
+                    // Compute the maximum score from remaining match scores
+                    int newHighest = remainingScores.stream()
+                            .mapToInt(MatchScore::getScore)
+                            .max()
+                            .orElse(0);
+
+                    user.setHighestScore(newHighest);
+                }
+            }
+        }
+        return affectedUsers;
+    }
+
+
+    private static User removeUserScoreStats(MatchScore ms) {
+        User user = ms.getUser();
+
+        // Subtract matches played
+        user.setMatchesPlayed(user.getMatchesPlayed() - 1);
+
+        // Subtract cumulative score
+        user.setCumulativeScore(user.getCumulativeScore() - ms.getScore());
+
+        // Reverse role-based stats
+        switch (ms.getRole()) {
+            case WINNER -> user.setVictories(user.getVictories() - 1);
+            case LOSER -> user.setDefeats(user.getDefeats() - 1);
+            case TIE -> user.setDraws(user.getDraws() - 1);
+        }
+
+        // Highest score consideration (just log for now)
+        if (ms.getScore() == user.getHighestScore()) {
+            System.out.println("Highest score removed for user " + user.getUsername()
+                    + ". Recalculation needed in future.");
+            // Future fix: recompute highest score across user's remaining MatchScores
+        }
+
+        return user;
+    }
+
+
     // --------------------------------------------------------------
     // --------------------- Helper Methods -------------------------
     // --------------------------------------------------------------

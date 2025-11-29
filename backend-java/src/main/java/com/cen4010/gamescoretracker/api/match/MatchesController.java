@@ -26,4 +26,10 @@ public class MatchesController {
         UserMatchesDTO dto = matchService.getUserMatches(userId);
         return ResponseEntity.ok(dto);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMatch(@PathVariable UUID id) {
+        matchService.deleteMatch(id);
+        return ResponseEntity.ok("Match deleted successfully.");
+    }
 }

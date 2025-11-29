@@ -21,10 +21,17 @@ public class UserMatchesDTO {
     public static class UserMatchItemDTO {
         private UUID matchId;
         private LocalDateTime matchDate;
-        private String result;       // WIN, LOSS, DRAW (global match result)
-        private String playerRole;   // WINNER, LOSER, TIE (role for the requested user)
-        private List<UserDTO> winners;
-        private List<UserDTO> losers;
-        private List<UserDTO> ties;
+        private String result;
+        private String playerRole;   // the role of the user requesting the matches
+        private List<MatchUserEntryDTO> participants;
+    }
+
+    @Data
+    @Builder
+    public static class MatchUserEntryDTO {
+        private UUID userId;
+        private String username;
+        private int score;
+        private String role; // WINNER, LOSER, TIE
     }
 }

@@ -54,44 +54,38 @@ public class MatchMapper {
                 .build();
     }
 
-    public static UserMatchesDTO.UserMatchItemDTO toUserMatchItemDTO(Match match,
-                                                                     UUID targetUserId,
-                                                                     List<MatchScore> allScores) {
+    public static UserMatchesDTO.UserMatchItemDTO toUserMatchItemDTO(
+            Match match,
+            UUID targetUserId,
+            List<MatchScore> allScores
+    ) {
 
-        // Identify THIS user's participant row
+        // Find this user's specific row
         MatchScore myScore = allScores.stream()
                 .filter(ms -> ms.getUser().getUserId().equals(targetUserId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("User did not participate in this match"));
 
-        List<UserDTO> winners = allScores.stream()
-                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.WINNER)
-                .map(MatchScore::getUser)
-                .map(UserMapper::toDTO)
-                .collect(Collectors.toList());
-
-        List<UserDTO> losers = allScores.stream()
-                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.LOSER)
-                .map(MatchScore::getUser)
-                .map(UserMapper::toDTO)
-                .collect(Collectors.toList());
-
-        List<UserDTO> ties = allScores.stream()
-                .filter(ms -> ms.getRole() == MatchScore.PlayerRole.TIE)
-                .map(MatchScore::getUser)
-                .map(UserMapper::toDTO)
-                .collect(Collectors.toList());
+        // Build participant list with full match context
+        List<UserMatchesDTO.MatchUserEntryDTO> participants = allScores.stream()
+                .map(ms -> UserMatchesDTO.MatchUserEntryDTO.builder()
+                        .userId(ms.getUser().getUserId())
+                        .username(ms.getUser().getUsername())
+                        .score(ms.getScore())
+                        .role(ms.getRole().name())
+                        .build()
+                )
+                .toList();
 
         return UserMatchesDTO.UserMatchItemDTO.builder()
                 .matchId(match.getMatchId())
                 .matchDate(match.getMatchDate())
                 .result(match.getResult().name())
-                .playerRole(myScore.getRole().name())
-                .winners(winners)
-                .losers(losers)
-                .ties(ties)
+                .playerRole(myScore.getRole().name())  // THIS user's role
+                .participants(participants)
                 .build();
     }
+
 
 }
 
