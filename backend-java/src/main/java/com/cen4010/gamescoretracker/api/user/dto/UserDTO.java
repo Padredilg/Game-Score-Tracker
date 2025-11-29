@@ -15,6 +15,7 @@ public class UserDTO {
     private User.Role role;
     private String groupCode;
     private String avatarUrl;
+    private Double winPercentage;
     private int victories;
     private int defeats;
     private int draws;

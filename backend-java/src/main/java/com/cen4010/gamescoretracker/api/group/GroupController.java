@@ -1,5 +1,6 @@
 package com.cen4010.gamescoretracker.api.group;
 
+import com.cen4010.gamescoretracker.api.group.database.Group;
 import com.cen4010.gamescoretracker.api.group.dto.*;
 import com.cen4010.gamescoretracker.api.user.UserMapper;
 import com.cen4010.gamescoretracker.api.user.database.User;
@@ -56,6 +57,25 @@ public class GroupController {
         return ResponseEntity.ok(GroupMapper.toDTO(updatedGroup));
     }
 
+
+    @GetMapping("/groupdetails")
+    public ResponseEntity<GroupDetailsResponse> getGroupDetails() {
+        User currentUser = userService.getCurrentUser();
+        Group group = groupService.getGroupForUser(currentUser);
+
+        GroupDTO groupDTO = GroupMapper.toDTO(group);
+
+        List<UserDTO> members = group.getUsers().stream()
+                .map(UserMapper::toDTOWithWinPercentage)
+                .toList();
+
+        GroupDetailsResponse response = GroupDetailsResponse.builder()
+                .group(groupDTO)
+                .members(members)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 
     //Retrieve all existing groups (not for app)
     @GetMapping("/all")
