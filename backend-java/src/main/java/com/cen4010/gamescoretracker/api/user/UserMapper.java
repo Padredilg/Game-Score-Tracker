@@ -17,6 +17,7 @@ public class UserMapper {
                 .avatarUrl(user.getAvatarUrl())
                 .victories(user.getVictories())
                 .defeats(user.getDefeats())
+                .draws(user.getDraws())
                 .matchesPlayed(user.getMatchesPlayed())
                 .cumulativeScore(user.getCumulativeScore())
                 .highestScore(user.getHighestScore())

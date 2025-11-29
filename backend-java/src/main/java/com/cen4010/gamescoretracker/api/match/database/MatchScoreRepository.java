@@ -1,4 +1,4 @@
-package com.cen4010.gamescoretracker.api.matchscore.database;
+package com.cen4010.gamescoretracker.api.match.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +10,8 @@ public interface MatchScoreRepository extends JpaRepository<MatchScore, UUID> {
     List<MatchScore> findByMatchMatchId(UUID matchId);
 
     void deleteByMatch_MatchId(UUID matchId);
+
+    List<MatchScore> findByUserUserIdOrderByMatchMatchDateDesc(UUID userId);
+
+    List<MatchScore> findByUserUserId(UUID userId);
 }

@@ -1,7 +1,7 @@
 package com.cen4010.gamescoretracker.api.user.database;
 
 import com.cen4010.gamescoretracker.api.group.database.Group;
-import com.cen4010.gamescoretracker.api.matchscore.database.MatchScore;
+import com.cen4010.gamescoretracker.api.match.database.MatchScore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -54,6 +54,10 @@ public class User {
     @Builder.Default
     @Column(nullable = false)
     private int defeats = 0;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int draws = 0;
 
     @Builder.Default
     @Column(nullable = false)

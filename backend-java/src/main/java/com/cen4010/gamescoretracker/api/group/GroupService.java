@@ -154,4 +154,11 @@ public class GroupService {
                 )
                 .toList();
     }
+
+    public Group getGroupForUser(User user) {
+        if (user.getGroup() == null) {
+            throw new ForbiddenAccessException("User does not belong to a group");
+        }
+        return user.getGroup();
+    }
 }

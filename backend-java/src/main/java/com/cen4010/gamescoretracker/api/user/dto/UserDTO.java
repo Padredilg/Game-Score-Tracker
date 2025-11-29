@@ -17,6 +17,7 @@ public class UserDTO {
     private String avatarUrl;
     private int victories;
     private int defeats;
+    private int draws;
     private int matchesPlayed;
     private int cumulativeScore;
     private int highestScore;
