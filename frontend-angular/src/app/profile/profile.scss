@@ -1,0 +1,393 @@
+.app-shell {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 50% -200px, #ffffff 0, #f5f8fb 60%, #f5f8fb 100%);
+}
+
+/* ─── Top header bar ───────────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* GS logo: SQUARE with rounded corners (not a circle) */
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px; /* ⬅ changed from 999px */
+  background: #0f172a;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #111827;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Top buttons: rectangular, not pill */
+.top-btn {
+  padding: 8px 14px;
+  border-radius: 8px; /* ⬅ changed from 999px */
+  border: 1px solid transparent;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.top-btn.ghost {
+  border-color: #e5e7eb;
+}
+
+.top-btn.danger {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #b91c1c;
+}
+
+/* ─── Profile card shell ──────────────────────────────────── */
+
+.profile-page {
+  padding: 32px 40px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+}
+
+/* header inside card */
+
+.profile-header {
+  background: linear-gradient(120deg, #0f172a, #111827, #0b1220);
+  padding: 24px 32px 22px;
+  color: #eef2ff;
+}
+
+.profile-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatar-block {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+/* Avatar outline: SQUARE with rounded corners */
+.avatar-outline {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 3px solid #e5e7eb;
+  background: #020617;
+  display: grid;
+  place-items: center;
+}
+
+.avatar-icon {
+  font-size: 40px;
+  color: #e5e7eb;
+}
+
+/* EDIT BUTTON at top of avatar */
+.avatar-edit {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: #f97316;
+  color: #ffffff;
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user-name {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.user-handle {
+  font-size: 13px;
+  color: #cbd5f5;
+}
+
+/* New row: tags + change password button in one line */
+.user-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 4px;
+}
+
+.user-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag-soft {
+  background: rgba(148, 163, 184, 0.4);
+  color: #e5e7eb;
+}
+
+.tag-green {
+  background: rgba(22, 163, 74, 0.18);
+  color: #bbf7d0;
+}
+
+.tag-ghost {
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: #e5e7eb;
+}
+
+.tag-icon {
+  font-size: 12px;
+}
+
+.header-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: rgba(15, 23, 42, 0.6);
+  color: #e5e7eb;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.header-btn-icon {
+  font-size: 14px;
+}
+
+/* Optional: header-actions can stay unused or be removed in HTML */
+.header-actions {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* GREY LINE between header & body */
+.profile-divider {
+  height: 1px;
+  width: 100%;
+  background: #e5e7eb;
+}
+
+/* BODY */
+
+.profile-body {
+  padding: 22px 32px 26px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.section-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-icon {
+  font-size: 18px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Statistics cards */
+
+.stats-section {
+  margin-bottom: 28px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* label with icon + text */
+.stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.stat-icon {
+  font-size: 16px;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+/* brighter backgrounds */
+.stat-blue {
+  background: #e0edff;
+}
+
+.stat-green {
+  background: #dcfce7;
+}
+
+.stat-gold {
+  background: #fef3c7;
+}
+
+/* Recent activity */
+
+.activity-section {
+  margin-top: 6px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.activity-card {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 14px 18px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.activity-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activity-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.activity-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.activity-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.activity-when {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* more reddish delete button */
+.activity-delete {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid #fecaca;
+  background: #fee2e2;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #b91c1c;
+}

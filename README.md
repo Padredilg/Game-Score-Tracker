@@ -2,8 +2,7 @@
 
 This is an app for friends/colleagues to record and track their scores against each other through a ranking system that allows them to sort through various criteria.
 
-Luiz, Vas, Julian & Alex were here.
-Ray has not been here yet.
+Luiz, Vas, Julian, Alex and Ray were here.
 
 ### Steps to get started on Backend:
 
