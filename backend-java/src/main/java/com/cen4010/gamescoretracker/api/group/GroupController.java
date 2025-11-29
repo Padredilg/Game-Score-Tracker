@@ -5,6 +5,7 @@ import com.cen4010.gamescoretracker.api.user.UserMapper;
 import com.cen4010.gamescoretracker.api.user.database.User;
 import com.cen4010.gamescoretracker.api.user.UserService;
 import com.cen4010.gamescoretracker.api.user.dto.UserDTO;
+import com.cen4010.gamescoretracker.utils.requireadmin.RequireAdmin;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class GroupController {
     }
 
     // UPDATE GROUP COLUMN VISIBILITY
+    @RequireAdmin
     @PutMapping("/togglevisibility")
     public ResponseEntity<GroupDTO> toggleVisibility(@RequestBody GroupVisibilityRequest request) {
         User currentUser = userService.getCurrentUser();
@@ -37,6 +39,7 @@ public class GroupController {
     }
 
     // UPDATE GROUP'S NAME
+    @RequireAdmin
     @PutMapping("/editname")
     public ResponseEntity<GroupDTO> editGroupName(@RequestBody GroupEditNameRequest request) {
         User currentUser = userService.getCurrentUser();
@@ -45,6 +48,7 @@ public class GroupController {
     }
 
     // OPEN/CLOSE GROUP FOR NEW MEMBERS
+    @RequireAdmin
     @PutMapping("/manage")
     public ResponseEntity<GroupDTO> manageGroup(@RequestBody GroupManageRequest request) {
         User currentUser = userService.getCurrentUser();

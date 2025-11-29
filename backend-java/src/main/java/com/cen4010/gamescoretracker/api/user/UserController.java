@@ -4,6 +4,7 @@ import com.cen4010.gamescoretracker.api.user.database.User;
 import com.cen4010.gamescoretracker.api.user.dto.UserDTO;
 import com.cen4010.gamescoretracker.api.user.dto.UserUpdateRequest;
 import com.cen4010.gamescoretracker.utils.exceptions.ForbiddenAccessException;
+import com.cen4010.gamescoretracker.utils.requireadmin.RequireAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,16 +54,12 @@ public class UserController {
     }
 
     //ADMIN REMOVE MEMBER FROM GROUP
+    @RequireAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeUserFromGroup(@PathVariable UUID id) {
 
         User admin = userService.getCurrentUser();
         User target = userService.getUserById(id);
-
-        // admin must truly be group admin
-        if (admin.getRole() != User.Role.ADMIN) {
-            throw new ForbiddenAccessException("Only the group admin can remove users.");
-        }
 
         // target must belong to a group
         if (target.getGroupCode() == null) {

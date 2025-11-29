@@ -75,7 +75,7 @@ public class GroupService {
 
     // Toggle column visibilities
     public Group toggleVisibility(User admin, GroupVisibilityRequest request) {
-        Group group = requireAdminGroup(admin);
+        Group group = admin.getGroup();
 
         //WinPercentageVisibility
         if (request.getWinPercentageVisibility() != null)
@@ -103,7 +103,7 @@ public class GroupService {
 
     // Edit group name
     public Group editGroupName(User admin, GroupEditNameRequest request) {
-        Group group = requireAdminGroup(admin);
+        Group group = admin.getGroup();
 
         group.setGroupName(request.getGroupName());
         groupRepository.save(group);
@@ -112,19 +112,10 @@ public class GroupService {
 
     // Open/close group for new members
     public Group manageGroup(User admin, GroupManageRequest request) {
-        Group group = requireAdminGroup(admin);
+        Group group = admin.getGroup();
 
         group.setOpenForNewMembers(request.getOpenForNewMembers());
         groupRepository.save(group);
-        return group;
-    }
-
-
-    private Group requireAdminGroup(User user) {
-        Group group = user.getGroup();
-        if (group == null || !group.getAdmin().getUserId().equals(user.getUserId())) {
-            throw new ForbiddenAccessException("User is not admin of the group");
-        }
         return group;
     }
 
