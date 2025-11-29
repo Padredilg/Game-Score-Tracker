@@ -1,0 +1,54 @@
+<form (ngSubmit)="submit()" class="container">
+  <h2>Add Match Score</h2>
+
+  <div class="form-row">
+    <div class="grow">
+      <label>Result</label>
+      <select [(ngModel)]="model.result" name="result">
+        <option value="win">Win</option>
+        <option value="loss">Loss</option>
+        <option value="draw">Draw</option>
+      </select>
+    </div>
+    <div class="grow">
+      <label>Date</label>
+      <input type="date" [(ngModel)]="playedAtStr" name="playedAt" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>My Score</label>
+    <input type="number" [(ngModel)]="model.myScore" name="myScore" placeholder="Enter your score" />
+  </div>
+
+  <div class="section-header">
+    <label>Teammates (optional)</label>
+    <button type="button" class="add-btn" (click)="addTeammate()">+ Add Teammate</button>
+  </div>
+  <div class="form-row" *ngFor="let t of teammatesUI; let i = index">
+    <select class="grow" [(ngModel)]="t.userId" name="tmUser{{i}}">
+      <option [ngValue]="undefined">Select teammate</option>
+      <option *ngFor="let m of groupMembers" [ngValue]="m.userId">{{ m.username }}</option>
+    </select>
+    <input type="number" [(ngModel)]="t.score" name="tmScore{{i}}" placeholder="Score" />
+    <button type="button" (click)="removeTeammate(i)"><mat-icon>delete</mat-icon></button>
+  </div>
+
+  <div class="section-header">
+    <label>Opponents</label>
+    <button type="button" class="add-btn" (click)="addOpponent()">+ Add Opponent</button>
+  </div>
+  <div class="form-row" *ngFor="let o of opponentsUI; let i = index">
+    <select class="grow" [(ngModel)]="o.userId" name="opUser{{i}}">
+      <option [ngValue]="undefined">Select opponent</option>
+      <option *ngFor="let m of groupMembers" [ngValue]="m.userId">{{ m.username }}</option>
+    </select>
+    <input type="number" [(ngModel)]="o.score" name="opScore{{i}}" placeholder="Score" />
+    <button type="button" (click)="removeOpponent(i)"><mat-icon>delete</mat-icon></button>
+  </div>
+
+  <div class="button-row">
+    <button type="button" class="secondary" (click)="close()">Cancel</button>
+    <button type="submit" class="primary">Add Match</button>
+  </div>
+</form>

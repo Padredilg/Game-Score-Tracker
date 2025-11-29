@@ -1,0 +1,65 @@
+.dialog {
+  width: 420px;
+  max-width: 90vw;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.title {
+  margin: 0;
+  font-size: 20px;
+}
+.player {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.info .name {
+  font-weight: 600;
+}
+.info .handle {
+  opacity: 0.7;
+  font-size: 12px;
+}
+.message {
+  margin: 4px 0 8px 0;
+  opacity: 0.9;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #eee;
+  cursor: pointer;
+}
+.btn:hover {
+  background: #e0e0e0;
+}
+.btn.danger {
+  background: #f44336;
+  color: #fff;
+}
+.btn.danger:hover {
+  background: #e53935;
+}
+
+.icon-line{display:flex;align-items:center;gap:6px;font-weight:600}
+.icon-line mat-icon{color:#f44336}
+.icon-line .text{color:#f44336}

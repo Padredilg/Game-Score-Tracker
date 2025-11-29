@@ -1,0 +1,39 @@
+<div class="header">
+    <div class="left">
+        <div class="logo">GS</div>
+        <div class="group-info">
+            <div class="group-name">
+                {{ groupName || 'Group Name' }}
+                @if(isAdmin){
+                <span class="edit-icon" (click)="openEditDialog()"><mat-icon>edit</mat-icon></span>
+                }
+            </div>
+
+            <div class="group-code">
+                Group Code: <span class="code">{{ groupCode }}</span>
+                @if(isAdmin){
+                <span class="icon copy" matTooltip="Copy" (click)="copyGroupCode()"><mat-icon>content_copy</mat-icon></span>
+                <span class="icon refresh" matTooltip="Refresh"
+                    (click)="refreshGroupCode()"><mat-icon>refresh</mat-icon></span>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <div class="right">
+        <span class="greeting">Hello {{ username}}!</span>
+        <button class="btn profile" (click)="goToProfile()"><mat-icon>person</mat-icon> Profile</button>
+        <button class="btn signout" (click)="signOut()">Sign Out <mat-icon>logout</mat-icon></button>
+    </div>
+</div>
+<div class="modal-backdrop" *ngIf="showEdit">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Edit Group Name</h3>
+    <input type="text" [(ngModel)]="tempGroupName" placeholder="Group name" />
+    <div class="actions">
+      <button class="btn cancel" (click)="cancelEdit()">Cancel</button>
+      <button class="btn save" (click)="saveGroupName()">Save</button>
+    </div>
+  </div>
+</div>
