@@ -22,13 +22,15 @@ export class JoinGroupComponent {
 
   joinGroup() {
     const code = this.groupCode.trim().toUpperCase();
-    
+
     this.errorMessage = '';
 
     this.groupService.joinGroup(code).subscribe({
       next: (res) => {
-        try { localStorage.setItem('user', JSON.stringify(res)); } catch {}
-        
+        try {
+          localStorage.setItem('user', JSON.stringify(res));
+        } catch {}
+
         window.dispatchEvent(new CustomEvent('user-joined-group', { detail: res }));
         this.router.navigate(['/main-dashboard']);
       },

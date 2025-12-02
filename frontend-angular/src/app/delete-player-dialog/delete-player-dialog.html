@@ -3,23 +3,23 @@
     <mat-icon>delete</mat-icon>
     <span class="text">Remove Player</span>
   </div>
-  <p class="message">Are you sure you want to remove this player from the group?
-  </p>
+  <p class="message">Are you sure you want to remove this player from the group?</p>
 
   <div class="player">
     <div class="avatar" [style.background-color]="color">{{ initials }}</div>
     <div class="info">
       <div class="name">{{ data.player?.name || data.player?.username }}</div>
-      <div class="handle">{{ data.player?.totalWins}} wins, {{data.player?.gamesPlayed}} games</div>
+      <div class="handle">
+        {{ data.player?.totalWins }} wins, {{ data.player?.gamesPlayed }} games
+      </div>
     </div>
   </div>
-  <p class="message">This action cannot be undone. All of their game history and statistics will be permanently deleted.
+  <p class="message">
+    This action cannot be undone. All of their game history and statistics will be permanently
+    deleted.
   </p>
   <div class="actions">
     <button class="btn" type="button" (click)="cancel()">Cancel</button>
-    <button class="btn danger" type="button" (click)="confirm()">
-
-      Remove Player
-    </button>
+    <button class="btn danger" type="button" (click)="confirm()">Remove Player</button>
   </div>
 </div>

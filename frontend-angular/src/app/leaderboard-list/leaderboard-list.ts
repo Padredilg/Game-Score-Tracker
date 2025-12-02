@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeletePlayerDialog } from '../delete-player-dialog/delete-player-dialog';
@@ -7,11 +7,24 @@ import { GroupService } from '../services/group.service';
 
 @Component({
   selector: 'leaderboard-list',
+  standalone: true,
   imports: [MatIcon, MatDialogModule],
   templateUrl: './leaderboard-list.html',
   styleUrl: './leaderboard-list.scss',
 })
 export class LeaderboardList {
+  @Input() searchTerm: string = '';
+
+  playersFiltered() {
+    const term = (this.searchTerm || '').toLowerCase();
+    if (!term) return this.players();
+    return this.players().filter(
+      (p: any) =>
+        (p.name || '').toLowerCase().includes(term) ||
+        (p.username || '').toLowerCase().includes(term),
+    );
+  }
+
   players = signal<any>([]);
   isAdmin = signal<boolean>(false);
   private groupService = inject(GroupService);
@@ -25,14 +38,30 @@ export class LeaderboardList {
       if (raw) {
         const u = JSON.parse(raw);
         this.isAdmin.set(u.role === 'ADMIN');
-        this.addUserToPlayers(u); 
+        this.addUserToPlayers(u);
       }
     } catch {}
 
-    
     window.addEventListener('user-joined-group', (e: any) => {
       const u = e.detail;
       if (u) this.addUserToPlayers(u);
+    });
+
+    window.addEventListener('user-updated', (e: any) => {
+      const d = e?.detail;
+      if (!d?.userId) return;
+      this.players.update((list: any[]) =>
+        list.map((p: any) =>
+          p.userId === d.userId
+            ? {
+                ...p,
+                name: d.nickname || p.name,
+                initials: (d.nickname || p.username || '').slice(0, 2).toUpperCase(),
+                color: this.hashColor(d.nickname || p.username),
+              }
+            : p,
+        ),
+      );
     });
   }
 
@@ -48,14 +77,15 @@ export class LeaderboardList {
                 : 0;
           return {
             userId: m.userId,
-            name: m.username,
+            username: m.username,
+            name: m.nickname || m.username,
             totalWins: m.victories,
             gamesPlayed: m.matchesPlayed,
             totalPoints: m.cumulativeScore,
             highestScore: m.highestScore,
             winPercent,
-            initials: (m.username || '').slice(0, 2).toUpperCase(),
-            color: this.hashColor(m.username),
+            initials: (m.nickname || m.username || '').slice(0, 2).toUpperCase(),
+            color: this.hashColor(m.nickname || m.username),
           };
         });
         this.players.set(members);
@@ -77,14 +107,15 @@ export class LeaderboardList {
         const winPercent = u.matchesPlayed ? Math.round((u.victories / u.matchesPlayed) * 100) : 0;
         return {
           ...p,
-          name: u.username,
+          username: u.username,
+          name: u.nickname || u.username,
           totalWins: u.victories,
           gamesPlayed: u.matchesPlayed,
           totalPoints: u.cumulativeScore,
           highestScore: u.highestScore,
           winPercent,
-          initials: (u.username || '').slice(0, 2).toUpperCase(),
-          color: this.hashColor(u.username),
+          initials: (u.nickname || u.username || '').slice(0, 2).toUpperCase(),
+          color: this.hashColor(u.nickname || u.username),
         };
       }),
     );
@@ -104,14 +135,15 @@ export class LeaderboardList {
         ...list,
         {
           userId: u.userId,
-          name: u.username,
+          username: u.username,
+          name: u.nickname || u.username,
           totalWins: u.victories,
           gamesPlayed: u.matchesPlayed,
           totalPoints: u.cumulativeScore,
           highestScore: u.highestScore,
           winPercent,
-          initials: (u.username || '').slice(0, 2).toUpperCase(),
-          color: this.hashColor(u.username),
+          initials: (u.nickname || u.username || '').slice(0, 2).toUpperCase(),
+          color: this.hashColor(u.nickname || u.username),
         },
       ];
     });
@@ -132,7 +164,6 @@ export class LeaderboardList {
     });
   }
 
- 
   recomputeFromLocalStorage() {
     let userName: string | null = null;
     try {
@@ -158,7 +189,8 @@ export class LeaderboardList {
                 ...list,
                 {
                   userId: u.userId,
-                  name: u.username,
+                  username: u.username,
+                  name: u.nickname || u.username,
                   totalWins: u.victories,
                   gamesPlayed: u.matchesPlayed,
                   totalPoints: u.cumulativeScore,

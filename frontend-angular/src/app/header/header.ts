@@ -22,6 +22,7 @@ interface StoredUser {
 export class Header {
   isAdmin = false;
   username = '';
+  nickname = '';
   groupCode = '';
   groupName = '';
   showEdit = false;
@@ -37,6 +38,7 @@ export class Header {
       if (raw) {
         const u: StoredUser = JSON.parse(raw);
         this.username = u.username;
+        this.nickname = (u as any).nickname || u.username;
         this.groupCode = u.groupCode;
         this.isAdmin = u.role === 'ADMIN';
       }
@@ -52,12 +54,20 @@ export class Header {
     });
   }
 
+  ngAfterViewInit() {
+    window.addEventListener('user-updated', (e: any) => {
+      const d = e?.detail;
+      if (d?.nickname) this.nickname = d.nickname;
+    });
+  }
+
   goToProfile() {
     this.router.navigate(['/profile']);
   }
 
   signOut() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 

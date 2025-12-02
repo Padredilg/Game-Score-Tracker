@@ -75,7 +75,17 @@ export class AddMatchDialog {
     this.opponentsUI.splice(i, 1);
   }
 
+  canSubmit(): boolean {
+    const hasDate = !!(this.playedAtStr && this.playedAtStr.trim());
+    const hasResult = !!(this.model.result && String(this.model.result).trim());
+    const firstOpp = this.opponentsUI[0];
+    const hasOpponent = !!(firstOpp && (firstOpp.userId || (firstOpp.name || '').trim()));
+    const hasOppScore = firstOpp && firstOpp.score != null && firstOpp.score !== undefined;
+    return hasDate && hasResult && hasOpponent && hasOppScore;
+  }
+
   submit() {
+    if (!this.canSubmit()) return;
     const fmtDate = (() => {
       const s = this.playedAtStr || '';
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);

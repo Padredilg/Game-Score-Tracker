@@ -16,6 +16,4 @@ export class AppService {
   register(payload: any): Observable<any> {
     return this.httpClient.post(`${this.url}/register`, payload);
   }
-
-  
 }

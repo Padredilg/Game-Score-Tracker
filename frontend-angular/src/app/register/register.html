@@ -24,10 +24,12 @@
       <!-- Username -->
       <label class="field">
         <span class="label">Username</span>
-        <input type="text"
-               placeholder="Choose a username"
-               formControlName="username"
-               [class.invalid]="f['username'].touched && f['username'].invalid" />
+        <input
+          type="text"
+          placeholder="Choose a username"
+          formControlName="username"
+          [class.invalid]="f['username'].touched && f['username'].invalid"
+        />
         <small *ngIf="f['username'].touched && f['username'].invalid" class="error">
           Username is required (min 3 characters).
         </small>
@@ -36,10 +38,12 @@
       <!-- Password -->
       <label class="field">
         <span class="label">Password</span>
-        <input type="password"
-               placeholder="Create a password"
-               formControlName="password"
-               [class.invalid]="f['password'].touched && f['password'].invalid || passwordMismatch()" />
+        <input
+          type="password"
+          placeholder="Create a password"
+          formControlName="password"
+          [class.invalid]="(f['password'].touched && f['password'].invalid) || passwordMismatch()"
+        />
         <small *ngIf="f['password'].touched && f['password'].invalid" class="error">
           Password is required (min 4 characters).
         </small>
@@ -48,16 +52,18 @@
       <!-- Confirm password -->
       <label class="field">
         <span class="label">Verify Password</span>
-        <input type="password"
-               placeholder="Re-enter your password"
-               formControlName="confirmPassword"
-               [class.invalid]="f['confirmPassword'].touched && f['confirmPassword'].invalid || passwordMismatch()" />
+        <input
+          type="password"
+          placeholder="Re-enter your password"
+          formControlName="confirmPassword"
+          [class.invalid]="
+            (f['confirmPassword'].touched && f['confirmPassword'].invalid) || passwordMismatch()
+          "
+        />
         <small *ngIf="f['confirmPassword'].touched && f['confirmPassword'].invalid" class="error">
           Please confirm your password.
         </small>
-        <small *ngIf="passwordMismatch()" class="error">
-          Passwords do not match.
-        </small>
+        <small *ngIf="passwordMismatch()" class="error"> Passwords do not match. </small>
       </label>
 
       <button class="primary" type="submit" [disabled]="submitting()">
@@ -71,7 +77,5 @@
     </p>
   </div>
 
-  <footer class="copyright">
-    © 2025 Game Score Tracker
-  </footer>
+  <footer class="copyright">© 2025 Game Score Tracker</footer>
 </div>

@@ -1,5 +1,6 @@
 export interface StoredUser {
   username: string;
+  nickname?: string;
   role: string;
   groupCode: string;
   cumulativeScore: number;

@@ -30,6 +30,7 @@ export class MainDashboard {
   user: UserStats | null = null;
   matches: any[] = [];
   @ViewChild(LeaderboardList) leaderboard?: LeaderboardList;
+  searchTerm = '';
 
   constructor(
     private dialog: MatDialog,
@@ -39,6 +40,10 @@ export class MainDashboard {
       const raw = localStorage.getItem('user');
       if (raw) this.user = JSON.parse(raw);
     } catch {}
+  }
+
+  onSearch(e: any) {
+    this.searchTerm = (e?.target?.value || '').toLowerCase();
   }
 
   openAddMatch() {

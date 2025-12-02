@@ -60,6 +60,15 @@
   background: #e53935;
 }
 
-.icon-line{display:flex;align-items:center;gap:6px;font-weight:600}
-.icon-line mat-icon{color:#f44336}
-.icon-line .text{color:#f44336}
+.icon-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.icon-line mat-icon {
+  color: #f44336;
+}
+.icon-line .text {
+  color: #f44336;
+}

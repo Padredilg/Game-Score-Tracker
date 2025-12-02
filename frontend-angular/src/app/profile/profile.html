@@ -10,33 +10,49 @@
     </div>
 
     <div class="top-actions">
-      <button class="top-btn ghost" (click)="onBackToDashboard()">
-        Back to Dashboard
-      </button>
+      <button class="top-btn ghost" (click)="onBackToDashboard()">Back to Dashboard</button>
       <button class="top-btn danger" (click)="onSignOut()">Sign Out</button>
     </div>
   </header>
 
   <main class="profile-page">
     <section class="profile-card">
-
       <div class="profile-header">
         <div class="profile-header-inner">
           <div class="avatar-block">
             <div class="avatar-wrapper">
               <div class="avatar-outline">
-                <div class="avatar-icon"><mat-icon>person</mat-icon></div>
+                <div class="avatar-icon" *ngIf="!previewUrl"><mat-icon>person</mat-icon></div>
+                <img
+                  *ngIf="previewUrl"
+                  [src]="previewUrl"
+                  alt="Avatar"
+                  style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px"
+                />
               </div>
 
-
-              <button class="avatar-edit" type="button" (click)="onEditProfilePhoto()"
-                aria-label="Edit profile picture">
+              <button
+                class="avatar-edit"
+                type="button"
+                (click)="onEditProfilePhoto()"
+                aria-label="Edit profile picture"
+              >
                 <mat-icon>edit</mat-icon>
               </button>
             </div>
 
             <div class="user-text">
-              <div class="user-name">{{ username }}</div>
+              <div class="user-name-row">
+                <div class="user-name">{{ nickname }}</div>
+                <button
+                  class="name-edit"
+                  type="button"
+                  (click)="onEditUsername()"
+                  aria-label="Edit display name"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
               <div class="user-handle">{{ handle }}</div>
 
               <div class="user-tags-row">
@@ -59,12 +75,9 @@
         </div>
       </div>
 
-
       <div class="profile-divider"></div>
 
-
       <div class="profile-body">
-
         <section class="stats-section">
           <div class="section-header">
             <div class="section-title-left">
@@ -100,7 +113,6 @@
           </div>
         </section>
 
-       
         <section class="activity-section">
           <div class="section-header">
             <div class="section-title-left">
@@ -108,7 +120,34 @@
             </div>
           </div>
 
+          <div class="modal-backdrop" *ngIf="showEditUsername" (click)="cancelEditUsername()">
+            <div class="modal" (click)="$event.stopPropagation()">
+              <h3>Edit Display Name</h3>
+              <input type="text" [(ngModel)]="tempUsername" placeholder="Display name" />
+              <div class="actions">
+                <button class="btn cancel" (click)="cancelEditUsername()">Cancel</button>
+                <button class="btn save" (click)="saveUsername()">Save</button>
+              </div>
+            </div>
+          </div>
 
+          <div class="modal-backdrop" *ngIf="showPhotoModal" (click)="cancelPhotoModal()">
+            <div class="modal" (click)="$event.stopPropagation()">
+              <h3>Update Profile Picture</h3>
+              <div class="upload-body">
+                <div class="preview" *ngIf="previewUrl">
+                  <img [src]="previewUrl" alt="Preview" />
+                </div>
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+              </div>
+              <div class="actions">
+                <button class="btn cancel" (click)="cancelPhotoModal()">Cancel</button>
+                <button class="btn save" [disabled]="!previewUrl" (click)="uploadPhoto()">
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </section>

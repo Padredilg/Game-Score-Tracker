@@ -9,20 +9,26 @@ import { AppService } from '../app-service/app.service';
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrl: './login.scss',
 })
 export class LoginComponent {
   form: FormGroup;
   submitting = signal(false);
 
-  constructor(private fb: FormBuilder, private router: Router, private appService: AppService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private appService: AppService,
+  ) {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
     });
   }
 
-  get f() { return this.form.controls; }
+  get f() {
+    return this.form.controls;
+  }
 
   async onSubmit() {
     if (this.form.invalid) {
@@ -52,7 +58,7 @@ export class LoginComponent {
       error: (err) => {
         alert(err?.error?.message || 'Login failed');
         this.submitting.set(false);
-      }
+      },
     });
   }
 }
