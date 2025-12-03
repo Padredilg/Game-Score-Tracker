@@ -10,10 +10,12 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       <label class="field">
         <span class="label">Username</span>
-        <input type="text"
-               placeholder="Enter your username"
-               formControlName="username"
-               [class.invalid]="f['username'].touched && f['username'].invalid" />
+        <input
+          type="text"
+          placeholder="Enter your username"
+          formControlName="username"
+          [class.invalid]="f['username'].touched && f['username'].invalid"
+        />
         <small *ngIf="f['username'].touched && f['username'].invalid" class="error">
           Username is required (min 3 chars).
         </small>
@@ -21,10 +23,12 @@
 
       <label class="field">
         <span class="label">Password</span>
-        <input type="password"
-               placeholder="Enter your password"
-               formControlName="password"
-               [class.invalid]="f['password'].touched && f['password'].invalid" />
+        <input
+          type="password"
+          placeholder="Enter your password"
+          formControlName="password"
+          [class.invalid]="f['password'].touched && f['password'].invalid"
+        />
         <small *ngIf="f['password'].touched && f['password'].invalid" class="error">
           Password is required (min 4 chars).
         </small>
@@ -41,7 +45,5 @@
     </p>
   </div>
 
-  <footer class="copyright">
-    © 2025 Game Score Tracker
-  </footer>
+  <footer class="copyright">© 2025 Game Score Tracker</footer>
 </div>

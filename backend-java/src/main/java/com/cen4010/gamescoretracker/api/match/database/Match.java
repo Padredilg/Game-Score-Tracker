@@ -47,6 +47,7 @@ public class Match {
     private Group group;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     // --- Relationship to players + scores ---

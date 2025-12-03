@@ -49,7 +49,7 @@ public class MatchService {
 
         // 2. Persist match BEFORE linking scores (so FK is valid)
         Match savedMatch = matchRepository.save(match);
-
+        matchRepository.flush();
         // 3. Attach all player scores
         List<MatchScore> scores = buildMatchScoreList(match, request);
 
