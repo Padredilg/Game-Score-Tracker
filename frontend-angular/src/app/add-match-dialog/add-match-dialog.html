@@ -34,7 +34,13 @@
   <div class="form-row" *ngFor="let t of teammatesUI; let i = index">
     <select class="grow" [(ngModel)]="t.userId" name="tmUser{{ i }}">
       <option [ngValue]="undefined">Select teammate</option>
-      <option *ngFor="let m of groupMembers" [ngValue]="m.userId">{{ m.username }}</option>
+      <option
+        *ngFor="let m of groupMembers"
+        [ngValue]="m.userId"
+        [disabled]="isSelected(m.userId, 'teammates', i)"
+      >
+        {{ m.username }}
+      </option>
     </select>
     <input type="number" [(ngModel)]="t.score" name="tmScore{{ i }}" placeholder="Score" />
     <button type="button" class="remove-btn danger" (click)="removeTeammate(i)">
@@ -49,7 +55,13 @@
   <div class="form-row" *ngFor="let o of opponentsUI; let i = index">
     <select class="grow" [(ngModel)]="o.userId" name="opUser{{ i }}" required>
       <option [ngValue]="undefined">Select opponent</option>
-      <option *ngFor="let m of groupMembers" [ngValue]="m.userId">{{ m.username }}</option>
+      <option
+        *ngFor="let m of groupMembers"
+        [ngValue]="m.userId"
+        [disabled]="isSelected(m.userId, 'opponents', i)"
+      >
+        {{ m.username }}
+      </option>
     </select>
     <input type="number" [(ngModel)]="o.score" name="opScore{{ i }}" placeholder="Score" required />
     <button type="button" class="remove-btn danger" (click)="removeOpponent(i)">

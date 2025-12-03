@@ -1,14 +1,16 @@
 import { Component, inject, signal, Input } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeletePlayerDialog } from '../delete-player-dialog/delete-player-dialog';
 import { UserService } from '../services/user.service';
 import { GroupService } from '../services/group.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'leaderboard-list',
   standalone: true,
-  imports: [MatIcon, MatDialogModule],
+  imports: [CommonModule, MatIconModule, MatDialogModule, RouterModule],
   templateUrl: './leaderboard-list.html',
   styleUrl: './leaderboard-list.scss',
 })
@@ -28,6 +30,31 @@ export class LeaderboardList {
   players = signal<any>([]);
   isAdmin = signal<boolean>(false);
   private groupService = inject(GroupService);
+
+  // Column visibility state
+  visibleCols = signal<Record<string, boolean>>({
+    rank: true,
+    player: true,
+    winPercent: true,
+    totalWins: true,
+    gamesPlayed: true,
+    totalPoints: true,
+    highestScore: true,
+    actions: true,
+  });
+
+  hideCol(key: string) {
+    this.visibleCols.update((c) => ({ ...c, [key]: false }));
+  }
+  showCol(key: string) {
+    if (key === 'actions' && !this.isAdmin()) return;
+    this.visibleCols.update((c) => ({ ...c, [key]: true }));
+  }
+  toggleCol(key: string) {
+    const cur = !!this.visibleCols()[key];
+    if (cur) this.hideCol(key);
+    else this.showCol(key);
+  }
 
   constructor(
     private userService: UserService,

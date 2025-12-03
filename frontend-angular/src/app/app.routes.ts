@@ -3,6 +3,10 @@ import { JoinGroupComponent } from './join-group/join-group.component';
 
 export const routes: Routes = [
   {
+    path: 'profile/:userId',
+    loadComponent: () => import('./profile/profile').then((m) => m.ProfileComponent),
+  },
+  {
     path: 'login',
     loadComponent: () => import('./login/login').then((m) => m.LoginComponent),
   },
@@ -12,6 +16,10 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
+    loadComponent: () => import('./profile/profile').then((m) => m.ProfileComponent),
+  },
+  {
+    path: 'profile/:userId',
     loadComponent: () => import('./profile/profile').then((m) => m.ProfileComponent),
   },
   {

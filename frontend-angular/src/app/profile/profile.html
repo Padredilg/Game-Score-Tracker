@@ -30,15 +30,6 @@
                   style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px"
                 />
               </div>
-
-              <button
-                class="avatar-edit"
-                type="button"
-                (click)="onEditProfilePhoto()"
-                aria-label="Edit profile picture"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
             </div>
 
             <div class="user-text">
@@ -47,6 +38,7 @@
                 <button
                   class="name-edit"
                   type="button"
+                  *ngIf="isOwnProfile"
                   (click)="onEditUsername()"
                   aria-label="Edit display name"
                 >
@@ -65,7 +57,12 @@
                   </span>
                 </div>
 
-                <button class="header-btn" type="button" (click)="onChangePassword()">
+                <button
+                  class="header-btn"
+                  type="button"
+                  *ngIf="isOwnProfile"
+                  (click)="onChangePassword()"
+                >
                   <span class="header-btn-icon"><mat-icon>lock</mat-icon></span>
                   <span>Change Password</span>
                 </button>
@@ -130,25 +127,29 @@
               </div>
             </div>
           </div>
+        </section>
 
-          <div class="modal-backdrop" *ngIf="showPhotoModal" (click)="cancelPhotoModal()">
-            <div class="modal" (click)="$event.stopPropagation()">
-              <h3>Update Profile Picture</h3>
-              <div class="upload-body">
-                <div class="preview" *ngIf="previewUrl">
-                  <img [src]="previewUrl" alt="Preview" />
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let a of activities">
+            <div class="activity-left">
+              <span
+                class="badge"
+                [class.win]="a.result === 'WIN'"
+                [class.loss]="a.result !== 'WIN'"
+                >{{ a.result }}</span
+              >
+              <div class="activity-text">
+                <div class="opponents strong">
+                  {{ a.result === 'WIN' ? 'won against' : 'lost against' }} {{ a['opponents'] }}
                 </div>
-                <input type="file" accept="image/*" (change)="onFileSelected($event)" />
-              </div>
-              <div class="actions">
-                <button class="btn cancel" (click)="cancelPhotoModal()">Cancel</button>
-                <button class="btn save" [disabled]="!previewUrl" (click)="uploadPhoto()">
-                  Upload
-                </button>
+                <div class="myscore">Score: {{ a.score }}</div>
               </div>
             </div>
+            <div class="activity-right">
+              <span class="date">{{ a.when }}</span>
+            </div>
           </div>
-        </section>
+        </div>
       </div>
     </section>
   </main>

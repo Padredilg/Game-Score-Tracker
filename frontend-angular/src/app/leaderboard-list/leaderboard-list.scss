@@ -66,6 +66,14 @@
   font-weight: 600;
   color: #333;
 }
+.player-name .profile-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+}
+.player-name .profile-link:hover {
+  cursor: pointer;
+}
 
 .player-handle {
   font-size: 0.8rem;
@@ -111,6 +119,18 @@ button[mat-icon-button]:hover {
   font-size: 18px;
   color: #222;
   margin-top: 10px;
+}
+
+/* checkbox controls in header */
+th label {
+  margin-left: 8px;
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+
+/* keep column width when hidden */
+.hidden-col {
+  visibility: hidden;
 }
 
 mat-icon {

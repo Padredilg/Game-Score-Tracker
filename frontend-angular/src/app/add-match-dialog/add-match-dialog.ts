@@ -62,6 +62,18 @@ export class AddMatchDialog {
     });
   }
 
+  // Prevent selecting same account across dropdowns in one modal
+  isSelected(userId: string, list: 'teammates' | 'opponents', idx: number): boolean {
+    const selected = new Set<string>();
+    this.teammatesUI.forEach((t, i) => {
+      if (t.userId && !(list === 'teammates' && i === idx)) selected.add(String(t.userId));
+    });
+    this.opponentsUI.forEach((o, i) => {
+      if (o.userId && !(list === 'opponents' && i === idx)) selected.add(String(o.userId));
+    });
+    return selected.has(String(userId));
+  }
+
   addTeammate() {
     this.teammatesUI.push({ name: '', score: undefined });
   }
@@ -97,34 +109,45 @@ export class AddMatchDialog {
       winners: {},
       losers: {},
     };
-    // current user from localStorage
+    const usedIds = new Set<string>();
+
+    // current user from localStorage (add once)
     try {
       const raw = localStorage.getItem('user');
       const u = raw ? JSON.parse(raw) : null;
       if (u?.userId && this.model.myScore != null) {
         const meId = String(u.userId);
-        const myScore = Number(this.model.myScore);
-        const res = String(this.model.result || 'draw').toLowerCase();
-        if (res === 'win') {
-          payload.winners[meId] = myScore;
-        } else if (res === 'loss') {
-          payload.losers[meId] = myScore;
-        } else {
-          payload.winners[meId] = myScore;
+        if (!usedIds.has(meId)) {
+          usedIds.add(meId);
+          const myScore = Number(this.model.myScore);
+          const res = String(this.model.result || 'draw').toLowerCase();
+          if (res === 'win') {
+            payload.winners[meId] = myScore;
+          } else if (res === 'loss') {
+            payload.losers[meId] = myScore;
+          } else {
+            payload.winners[meId] = myScore;
+          }
         }
       }
     } catch {}
 
+    // Opponents: add unique ids only
     for (const o of this.opponentsUI) {
-      const id = (o as any).userId || (o.name || '').trim();
-      if (!id) continue;
-      payload.losers[String(id)] = Number(o.score || 0);
+      const idRaw = (o as any).userId || (o.name || '').trim();
+      const id = String(idRaw || '');
+      if (!id || usedIds.has(id)) continue;
+      usedIds.add(id);
+      payload.losers[id] = Number(o.score || 0);
     }
 
+    // Teammates: add unique ids only
     for (const t of this.teammatesUI) {
-      const id = (t as any).userId || (t.name || '').trim();
-      if (!id) continue;
-      payload.winners[String(id)] = Number(t.score || 0);
+      const idRaw = (t as any).userId || (t.name || '').trim();
+      const id = String(idRaw || '');
+      if (!id || usedIds.has(id)) continue;
+      usedIds.add(id);
+      payload.winners[id] = Number(t.score || 0);
     }
     console.log(payload);
     this.ref.close(payload);

@@ -1,4 +1,56 @@
 .app-shell {
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .activity-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge.win {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .badge.loss {
+    background: #fee2e2;
+    color: #7f1d1d;
+  }
+  .date {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  .activity-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: right;
+  }
+  .opponents {
+    color: #374151;
+    font-size: 13px;
+  }
+  .myscore {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
   min-height: 100vh;
   background: radial-gradient(1200px 600px at 50% -200px, #ffffff 0, #f5f8fb 60%, #f5f8fb 100%);
 }

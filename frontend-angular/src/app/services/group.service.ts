@@ -25,7 +25,7 @@ export class GroupService {
     return this.httpClient.get(`${this.url}/groupdetails`);
   }
 
-  // manageGroup(payload: any): Observable<any> {
-  //   return this.httpClient.put(`${this.url}/manage`, payload);
-  // }
+  manageGroup(payload: any): Observable<any> {
+    return this.httpClient.put(`${this.url}/manage`, payload);
+  }
 }

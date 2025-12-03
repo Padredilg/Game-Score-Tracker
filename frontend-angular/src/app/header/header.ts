@@ -27,6 +27,8 @@ export class Header {
   groupName = '';
   showEdit = false;
   tempGroupName = '';
+  showManage = false;
+  openForNewMembers: boolean = true;
 
   constructor(
     private router: Router,
@@ -49,6 +51,7 @@ export class Header {
     this.groupService.getGroupDetails().subscribe({
       next: (resp: any) => {
         this.groupName = resp?.group?.groupName || '';
+        this.openForNewMembers = !!resp?.group?.openForNewMembers;
       },
       error: (err) => console.log(err),
     });
@@ -128,5 +131,26 @@ export class Header {
       }
     } catch {}
     this.openToast('Group code refreshed');
+  }
+
+  openManageDialog() {
+    this.showManage = true;
+  }
+  cancelManage() {
+    this.showManage = false;
+  }
+  confirmManage() {
+    const payload = { openForNewMembers: !this.openForNewMembers } as any;
+    this.groupService.manageGroup(payload).subscribe({
+      next: (g: any) => {
+        this.openForNewMembers = !!g?.openForNewMembers;
+        this.showManage = false;
+        this.openToast(this.openForNewMembers ? 'Group opened' : 'Group closed');
+      },
+      error: () => {
+        this.showManage = false;
+        this.openToast('Action failed');
+      },
+    });
   }
 }

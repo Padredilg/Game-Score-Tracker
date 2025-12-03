@@ -1,49 +1,83 @@
 <div class="table-container">
-    <table class="leaderboard-table">
-        <thead class="leaderboard-title">Leaderboard</thead>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Player</th>
-                <th>Win %</th>
-                <th>Total Wins</th>
-                <th>Games Played</th>
-                <th>Total Points</th>
-                <th>Highest Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (player of playersFiltered(); track $index) {
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td class="player-cell">
-                    <div class="player-info">
-                        <div class="avatar" [style.background-color]="player.color">
-                            {{ player.initials }}
-                        </div>
-                        <div class="player-details">
-                            <div class="player-name">{{ player.name }}</div>
-                            <div class="player-handle">@{{ player.username || player.name }}</div>
-                        </div>
+  <table class="leaderboard-table">
+    <thead class="leaderboard-title">Leaderboard</thead>
+    <thead>
+      <tr>
+        <th>
+          #
+          <label><input type="checkbox" [checked]="visibleCols()['rank']" (change)="toggleCol('rank')" /> </label>
+        </th>
+        <th>
+          Player
+          <label><input type="checkbox" [checked]="visibleCols()['player']" (change)="toggleCol('player')" /> </label>
+        </th>
+        <th>
+          Win %
+          <label><input type="checkbox" [checked]="visibleCols()['winPercent']" (change)="toggleCol('winPercent')" />
+          </label>
+        </th>
+        <th>
+          Total Wins
+          <label><input type="checkbox" [checked]="visibleCols()['totalWins']" (change)="toggleCol('totalWins')" />
+          </label>
+        </th>
+        <th>
+          Games Played
+          <label><input type="checkbox" [checked]="visibleCols()['gamesPlayed']" (change)="toggleCol('gamesPlayed')" />
+          </label>
+        </th>
+        <th>
+          Total Points
+          <label><input type="checkbox" [checked]="visibleCols()['totalPoints']" (change)="toggleCol('totalPoints')" />
+          </label>
+        </th>
+        <th>
+          Highest Score
+          <label><input type="checkbox" [checked]="visibleCols()['highestScore']"
+              (change)="toggleCol('highestScore')" /> </label>
+        </th>
+        @if (isAdmin()) {
+        <th>
+          Actions
 
-                    </div>
-                </td>
-                <td>{{ player.winPercent }}%</td>
-                <td>{{ player.totalWins }}</td>
-                <td>{{ player.gamesPlayed }}</td>
-                <td>{{ player.totalPoints }}</td>
-                <td class="highlight">{{ player.highestScore }}</td>
-                @if (isAdmin()) {
-                <td>
-                    <button mat-icon-button color="warn" class="delete-btn" (click)="deletePlayer(player)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </td>
-                }
+        </th>
+        }
 
-            </tr>
-            }
-        </tbody>
-    </table>
-    <p class="player-count">Total Players: {{ playersFiltered().length }}</p>
+      </tr>
+    </thead>
+    <tbody>
+      @for (player of playersFiltered(); track $index) {
+      <tr>
+        <td [class.hidden-col]="!visibleCols()['rank']">{{ $index + 1 }}</td>
+        <td class="player-cell" [class.hidden-col]="!visibleCols()['player']">
+          <div class="player-info">
+            <div class="avatar" [style.background-color]="player.color">
+              {{ player.initials }}
+            </div>
+            <div class="player-details">
+              <div class="player-name"><a [routerLink]="['/profile', player.userId]" class="profile-link">{{ player.name
+                  }}</a></div>
+              <div class="player-handle">@{{ player.username || player.name }}</div>
+            </div>
+
+          </div>
+        </td>
+        <td [class.hidden-col]="!visibleCols()['winPercent']">{{ player.winPercent }}%</td>
+        <td [class.hidden-col]="!visibleCols()['totalWins']">{{ player.totalWins }}</td>
+        <td [class.hidden-col]="!visibleCols()['gamesPlayed']">{{ player.gamesPlayed }}</td>
+        <td [class.hidden-col]="!visibleCols()['totalPoints']">{{ player.totalPoints }}</td>
+        <td [class.hidden-col]="!visibleCols()['highestScore']" class="highlight">{{ player.highestScore }}</td>
+        @if (isAdmin()) {
+        <td [class.hidden-col]="!visibleCols()['actions']">
+          <button mat-icon-button color="warn" class="delete-btn" (click)="deletePlayer(player)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+        }
+
+      </tr>
+      }
+    </tbody>
+  </table>
+  <p class="player-count">Total Players: {{ playersFiltered().length }}</p>
 </div>

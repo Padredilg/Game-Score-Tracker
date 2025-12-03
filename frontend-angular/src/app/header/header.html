@@ -11,13 +11,19 @@
 
       <div class="group-code">
         Group Code: <span class="code">{{ groupCode }}</span>
+        <span class="icon copy" matTooltip="Copy" (click)="copyGroupCode()"
+          ><mat-icon>content_copy</mat-icon></span
+        >
         @if (isAdmin) {
-          <span class="icon copy" matTooltip="Copy" (click)="copyGroupCode()"
-            ><mat-icon>content_copy</mat-icon></span
+          <button
+            class="btn manage"
+            (click)="openManageDialog()"
+            [matTooltip]="openForNewMembers ? 'Close Group' : 'Open Group'"
+            [class.open]="openForNewMembers"
+            [class.closed]="!openForNewMembers"
           >
-          <span class="icon refresh" matTooltip="Refresh" (click)="refreshGroupCode()"
-            ><mat-icon>refresh</mat-icon></span
-          >
+            <mat-icon>{{ openForNewMembers ? 'lock_open' : 'lock' }}</mat-icon>
+          </button>
         }
       </div>
     </div>
@@ -36,6 +42,23 @@
     <div class="actions">
       <button class="btn cancel" (click)="cancelEdit()">Cancel</button>
       <button class="btn save" (click)="saveGroupName()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showManage" (click)="cancelManage()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>{{ openForNewMembers ? 'Close Group' : 'Open Group' }}</h3>
+    <p>
+      {{
+        openForNewMembers
+          ? 'Are you sure you want to close this group?'
+          : 'Are you sure you want to open this group?'
+      }}
+    </p>
+    <div class="actions">
+      <button class="btn cancel" (click)="cancelManage()">Cancel</button>
+      <button class="btn save" (click)="confirmManage()">Confirm</button>
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GroupService } from '../services/group.service';
+import { ActivatedRoute } from '@angular/router';
 import { MatchesService } from '../services/matches.service';
 import { UserService } from '../services/user.service';
 import { MatIcon } from '@angular/material/icon';
@@ -34,8 +35,12 @@ export class ProfileComponent {
   winRate = 0;
 
   activities: Activity[] = [];
+  isOwnProfile = true;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
     try {
       const raw = localStorage.getItem('user');
       if (raw) {
@@ -50,15 +55,25 @@ export class ProfileComponent {
   }
 
   ngOnInit() {
+    // decide which user to show: route param userId or current logged-in
+    const routeUserId = this.route.snapshot.paramMap.get('userId');
     let currentUserId: string | null = null;
     try {
       const raw = localStorage.getItem('user');
       const u: StoredUser | null = raw ? JSON.parse(raw) : null;
       currentUserId = u?.userId || null;
     } catch {}
-    if (currentUserId) {
-      this.userService.getUser(currentUserId).subscribe({
+
+    const targetUserId = routeUserId || currentUserId;
+    this.isOwnProfile = !routeUserId || routeUserId === currentUserId;
+
+    if (targetUserId) {
+      this.userService.getUser(targetUserId).subscribe({
         next: (u: any) => {
+          this.username = u.username ?? this.username;
+          this.nickname = u.nickname ?? this.nickname ?? this.username;
+          this.handle = '@' + (this.username || 'user');
+          this.role = u.role ?? this.role;
           this.gamesPlayed = u.matchesPlayed || 0;
           this.totalWins = u.victories || 0;
           const wp =
@@ -71,22 +86,39 @@ export class ProfileComponent {
         },
       });
     }
+
     this.groupService.getGroupDetails().subscribe({
       next: (resp: any) => {
         this.groupName = resp?.group?.groupName || '';
         const members = resp?.members || [];
-        const me = currentUserId
-          ? members.find((m: any) => m.userId === currentUserId)
+        const me = targetUserId
+          ? members.find((m: any) => m.userId === targetUserId)
           : members.find((m: any) => m.username === this.username);
-        if (me?.userId) {
-          this.matchesService.getUserMatches(me.userId).subscribe({
+        const displayUserId = me?.userId || targetUserId || null;
+        if (displayUserId) {
+          this.matchesService.getUserMatches(displayUserId).subscribe({
             next: (dto: any) => {
               const items = dto?.matches || [];
-              this.activities = items.slice(0, 10).map((m: any) => ({
-                result: m.result,
-                score: `Score: ${m.myScore ?? ''}`.trim(),
-                when: new Date(m.matchDate).toLocaleDateString(),
-              }));
+              this.activities = items.slice(0, 10).map((m: any) => {
+                const date = new Date(m.matchDate).toLocaleDateString();
+                const opponentNames = (m.participants || [])
+                  .filter((p: any) => p.userId !== displayUserId)
+                  .sort((a: any, b: any) => (b.score ?? 0) - (a.score ?? 0))
+                  .map((p: any) => p.username)
+                  .join(', ');
+                const scoresCombined = (() => {
+                  const scores = (m.participants || [])
+                    .map((p: any) => p.score ?? 0)
+                    .sort((a: number, b: number) => b - a);
+                  return scores.join(' - ');
+                })();
+                return {
+                  result: m.result || (m.playerRole === 'WINNER' ? 'WIN' : 'LOSS'),
+                  score: scoresCombined,
+                  when: date,
+                  opponents: opponentNames,
+                } as any;
+              });
             },
           });
         }
