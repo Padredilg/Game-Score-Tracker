@@ -1,0 +1,16 @@
+<header></header>
+<div class="main-dashboard">
+  <div class="center-container">
+    <div class="search-bar-container">
+      <div class="search-input">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Search players..." (input)="onSearch($event)" />
+      </div>
+      <button class="add-btn" (click)="openAddMatch()">
+        <mat-icon>add</mat-icon>
+        Add Game Entry
+      </button>
+    </div>
+  </div>
+  <leaderboard-list [searchTerm]="searchTerm"></leaderboard-list>
+</div>

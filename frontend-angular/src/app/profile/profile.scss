@@ -1,4 +1,58 @@
 .app-shell {
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .activity-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge.win {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .badge.loss {
+    background: #fee2e2;
+    color: #7f1d1d;
+  }
+  .date {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  .activity-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: right;
+    padding-right: 8px;
+    position: relative;
+  }
+  .opponents {
+    color: #374151;
+    font-size: 13px;
+  }
+  .myscore {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
   min-height: 100vh;
   background: radial-gradient(1200px 600px at 50% -200px, #ffffff 0, #f5f8fb 60%, #f5f8fb 100%);
 }
@@ -167,6 +221,46 @@
   font-weight: 700;
 }
 
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.name-edit {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: #f97316;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.35);
+}
+
+/* Ensure pencil icons are perfectly centered */
+.avatar-edit,
+.name-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.avatar-edit mat-icon,
+.name-edit mat-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Make username edit pencil white with no background */
+.name-edit {
+  background: transparent !important;
+}
+.name-edit mat-icon {
+  color: #ffffff;
+}
+
 .user-handle {
   font-size: 13px;
   color: #cbd5f5;
@@ -209,6 +303,70 @@
 .tag-ghost {
   border: 1px solid rgba(148, 163, 184, 0.7);
   color: #e5e7eb;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+.modal {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 420px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+
+  .upload-body {
+    display: grid;
+    gap: 10px;
+  }
+  .preview {
+    display: grid;
+    place-items: center;
+  }
+  .preview img {
+    max-width: 100%;
+    max-height: 240px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+  }
+}
+.modal h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+.modal input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+.modal .actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.modal .btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+}
+.modal .btn.save {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+}
+.modal .btn.danger {
+  background: #dc2626;
+  color: #fff;
+  border-color: #b91c1c;
 }
 
 .tag-icon {
@@ -380,14 +538,18 @@
 
 /* more reddish delete button */
 .activity-delete {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
-  border: 1px solid #fecaca;
-  background: #fee2e2;
-  display: grid;
-  place-items: center;
+  border: none;
+  background: transparent;
+
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 14px;
-  color: #b91c1c;
+  margin-right: 8px;
+}
+.activity-delete mat-icon {
+  color: #dc2626;
+  font-size: 24px;
 }
