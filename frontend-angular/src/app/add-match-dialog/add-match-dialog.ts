@@ -138,7 +138,14 @@ export class AddMatchDialog {
       const id = String(idRaw || '');
       if (!id || usedIds.has(id)) continue;
       usedIds.add(id);
-      payload.losers[id] = Number(o.score || 0);
+      const res = String(this.model.result || 'draw').toLowerCase();
+      if (res === 'loss') {
+        payload.winners[id] = Number(o.score || 0);
+      } else if (res === 'win') {
+        payload.losers[id] = Number(o.score || 0);
+      } else {
+        payload.winners[id] = Number(o.score || 0);
+      }
     }
 
     // Teammates: add unique ids only
@@ -147,7 +154,14 @@ export class AddMatchDialog {
       const id = String(idRaw || '');
       if (!id || usedIds.has(id)) continue;
       usedIds.add(id);
-      payload.winners[id] = Number(t.score || 0);
+      const res = String(this.model.result || 'draw').toLowerCase();
+      if (res === 'win') {
+        payload.winners[id] = Number(t.score || 0);
+      } else if (res === 'loss') {
+        payload.losers[id] = Number(t.score || 0);
+      } else {
+        payload.winners[id] = Number(t.score || 0);
+      }
     }
     console.log(payload);
     this.ref.close(payload);

@@ -14,4 +14,8 @@ export class MatchesService {
   getUserMatches(userId: string): Observable<any> {
     return this.http.get(`${this.base}/user/${userId}`);
   }
+
+  deleteMatchbyId(matchId: string): Observable<any> {
+    return this.http.delete(`${this.base}/${matchId}`, { responseType: 'text' as 'json' });
+  }
 }

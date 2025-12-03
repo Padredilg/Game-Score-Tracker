@@ -13,9 +13,9 @@ export class GroupService {
     return this.httpClient.post(`${this.url}/join`, { groupCode });
   }
 
-  // toggleVisibility(payload: any): Observable<any> {
-  //   return this.httpClient.put(`${this.url}/togglevisibility`, payload);
-  // }
+  toggleVisibility(payload: any): Observable<any> {
+    return this.httpClient.put(`${this.url}/togglevisibility`, payload);
+  }
 
   editGroupName(groupName: any): Observable<any> {
     return this.httpClient.put(`${this.url}/editname`, { groupName });

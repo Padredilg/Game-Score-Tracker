@@ -147,6 +147,26 @@
             </div>
             <div class="activity-right">
               <span class="date">{{ a.when }}</span>
+              <button
+                class="activity-delete"
+                *ngIf="isAdmin"
+                (click)="onClickDeleteMatch(a)"
+                title="Remove match"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-backdrop" *ngIf="showDeleteModal" (click)="cancelDeleteMatch()">
+          <div class="modal" (click)="$event.stopPropagation()">
+            <h3>Are you sure you want to remove this match?</h3>
+            <p>{{ deleteContext?.text }}</p>
+            <p class="strong">This will update all players' scores accordingly.</p>
+            <div class="actions">
+              <button class="btn cancel" (click)="cancelDeleteMatch()">Cancel</button>
+              <button class="btn danger" (click)="confirmDeleteMatch()">Confirm</button>
             </div>
           </div>
         </div>

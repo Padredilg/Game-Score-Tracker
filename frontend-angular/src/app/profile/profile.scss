@@ -41,6 +41,8 @@
     flex-direction: column;
     gap: 2px;
     text-align: right;
+    padding-right: 8px;
+    position: relative;
   }
   .opponents {
     color: #374151;
@@ -361,6 +363,11 @@
   color: #fff;
   border-color: #0f172a;
 }
+.modal .btn.danger {
+  background: #dc2626;
+  color: #fff;
+  border-color: #b91c1c;
+}
 
 .tag-icon {
   font-size: 12px;
@@ -531,14 +538,18 @@
 
 /* more reddish delete button */
 .activity-delete {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
-  border: 1px solid #fecaca;
-  background: #fee2e2;
-  display: grid;
-  place-items: center;
+  border: none;
+  background: transparent;
+
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 14px;
-  color: #b91c1c;
+  margin-right: 8px;
+}
+.activity-delete mat-icon {
+  color: #dc2626;
+  font-size: 24px;
 }

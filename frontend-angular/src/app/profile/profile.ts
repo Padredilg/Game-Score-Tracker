@@ -36,6 +36,9 @@ export class ProfileComponent {
 
   activities: Activity[] = [];
   isOwnProfile = true;
+  isAdmin = false;
+  showDeleteModal = false;
+  deleteContext: { text: string; matchId?: string } | null = null;
 
   constructor(
     private router: Router,
@@ -50,6 +53,7 @@ export class ProfileComponent {
         this.userId = (u as any).userId || null;
         this.handle = '@' + this.username;
         this.role = u.role;
+        this.isAdmin = u.role === 'ADMIN';
       }
     } catch {}
   }
@@ -101,6 +105,9 @@ export class ProfileComponent {
               const items = dto?.matches || [];
               this.activities = items.slice(0, 10).map((m: any) => {
                 const date = new Date(m.matchDate).toLocaleDateString();
+                const myRole = (m.participants || []).find(
+                  (p: any) => p.userId === displayUserId,
+                )?.role;
                 const opponentNames = (m.participants || [])
                   .filter((p: any) => p.userId !== displayUserId)
                   .sort((a: any, b: any) => (b.score ?? 0) - (a.score ?? 0))
@@ -113,7 +120,8 @@ export class ProfileComponent {
                   return scores.join(' - ');
                 })();
                 return {
-                  result: m.result || (m.playerRole === 'WINNER' ? 'WIN' : 'LOSS'),
+                  matchId: m.matchId,
+                  result: myRole === 'WINNER' ? 'WIN' : 'LOSS',
                   score: scoresCombined,
                   when: date,
                   opponents: opponentNames,
@@ -213,5 +221,81 @@ export class ProfileComponent {
   }
   onBackToDashboard() {
     this.router.navigate(['/main-dashboard']);
+  }
+
+  onClickDeleteMatch(a: any) {
+    if (!this.isAdmin) return;
+    const verb = a.result === 'WIN' ? 'won' : 'lost';
+    const text = `${this.nickname || this.username} ${verb} against ${a.opponents}`;
+    this.deleteContext = { text, matchId: a.matchId } as any;
+    this.showDeleteModal = true;
+  }
+  cancelDeleteMatch() {
+    this.showDeleteModal = false;
+    this.deleteContext = null;
+  }
+  confirmDeleteMatch() {
+    const id = this.deleteContext?.matchId as string | undefined;
+    if (!id) {
+      this.cancelDeleteMatch();
+      return;
+    }
+    this.matchesService.deleteMatchbyId(id).subscribe({
+      next: () => {
+        // remove from activities locally
+        this.activities = this.activities.filter((x: any) => x.matchId !== id);
+        // refresh activities from backend to stay consistent
+        const displayUserId = this.userId;
+        if (displayUserId) {
+          this.matchesService.getUserMatches(displayUserId).subscribe({
+            next: (dto: any) => {
+              const items = dto?.matches || [];
+              this.activities = items.slice(0, 10).map((m: any) => {
+                const date = new Date(m.matchDate).toLocaleDateString();
+                const myRole = (m.participants || []).find(
+                  (p: any) => p.userId === displayUserId,
+                )?.role;
+                const opponentNames = (m.participants || [])
+                  .filter((p: any) => p.userId !== displayUserId)
+                  .sort((a: any, b: any) => (b.score ?? 0) - (a.score ?? 0))
+                  .map((p: any) => p.username)
+                  .join(', ');
+                const scoresCombined = (() => {
+                  const scores = (m.participants || [])
+                    .map((p: any) => p.score ?? 0)
+                    .sort((a: number, b: number) => b - a);
+                  return scores.join(' - ');
+                })();
+                return {
+                  matchId: m.matchId,
+                  result: myRole === 'WINNER' ? 'WIN' : 'LOSS',
+                  score: scoresCombined,
+                  when: date,
+                  opponents: opponentNames,
+                } as any;
+              });
+            },
+          });
+          // refresh user stats
+          this.userService.getUser(displayUserId).subscribe({
+            next: (u: any) => {
+              this.gamesPlayed = u.matchesPlayed || 0;
+              this.totalWins = u.victories || 0;
+              const wp = this.gamesPlayed
+                ? Math.round((this.totalWins / this.gamesPlayed) * 100)
+                : 0;
+              this.winRate = wp;
+            },
+          });
+        }
+        // ask leaderboard to refresh
+        window.dispatchEvent(new CustomEvent('group-refresh'));
+        this.cancelDeleteMatch();
+      },
+      error: () => {
+        alert('Failed to delete match');
+        this.cancelDeleteMatch();
+      },
+    });
   }
 }

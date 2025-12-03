@@ -1,4 +1,12 @@
-import { Component, inject, signal, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  Input,
+  ViewChild,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -6,25 +14,54 @@ import { DeletePlayerDialog } from '../delete-player-dialog/delete-player-dialog
 import { UserService } from '../services/user.service';
 import { GroupService } from '../services/group.service';
 import { RouterModule } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'leaderboard-list',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatDialogModule, RouterModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatDialogModule,
+    RouterModule,
+    MatTableModule,
+    MatSortModule,
+  ],
   templateUrl: './leaderboard-list.html',
   styleUrl: './leaderboard-list.scss',
 })
-export class LeaderboardList {
+export class LeaderboardList implements OnChanges {
   @Input() searchTerm: string = '';
 
-  playersFiltered() {
-    const term = (this.searchTerm || '').toLowerCase();
-    if (!term) return this.players();
-    return this.players().filter(
-      (p: any) =>
-        (p.name || '').toLowerCase().includes(term) ||
-        (p.username || '').toLowerCase().includes(term),
-    );
+  dataSource = new MatTableDataSource<any>([]);
+  displayedColumns = [
+    'rank',
+    'player',
+    'winPercent',
+    'totalWins',
+    'gamesPlayed',
+    'totalPoints',
+    'highestScore',
+  ];
+  @ViewChild(MatSort) sort?: MatSort;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['searchTerm']) {
+      this.applyFilter(this.searchTerm || '');
+    }
+  }
+
+  applyFilter(term: string) {
+    const value = term.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      return (
+        (data.name || '').toLowerCase().includes(filter) ||
+        (data.username || '').toLowerCase().includes(filter)
+      );
+    };
+    this.dataSource.filter = value;
   }
 
   players = signal<any>([]);
@@ -43,17 +80,74 @@ export class LeaderboardList {
     actions: true,
   });
 
+  private recomputeDisplayedColumns() {
+    const base = [
+      'rank',
+      'player',
+      'winPercent',
+      'totalWins',
+      'gamesPlayed',
+      'totalPoints',
+      'highestScore',
+    ];
+    const cols = this.visibleCols();
+    const isAdmin = this.isAdmin();
+    this.displayedColumns = base.filter((c) => (isAdmin ? true : !!cols[this.mapColKey(c)]));
+    if (isAdmin) this.displayedColumns = [...this.displayedColumns, 'actions'];
+  }
+  private mapColKey(c: string): string {
+    switch (c) {
+      case 'winPercent':
+        return 'winPercent';
+      case 'totalWins':
+        return 'totalWins';
+      case 'gamesPlayed':
+        return 'gamesPlayed';
+      case 'totalPoints':
+        return 'totalPoints';
+      case 'highestScore':
+        return 'highestScore';
+      case 'rank':
+        return 'rank';
+      case 'player':
+        return 'player';
+      default:
+        return c;
+    }
+  }
+
   hideCol(key: string) {
+    if (!this.isAdmin()) return;
     this.visibleCols.update((c) => ({ ...c, [key]: false }));
+    this.recomputeDisplayedColumns();
   }
   showCol(key: string) {
-    if (key === 'actions' && !this.isAdmin()) return;
+    if (!this.isAdmin()) return;
     this.visibleCols.update((c) => ({ ...c, [key]: true }));
+    this.recomputeDisplayedColumns();
   }
   toggleCol(key: string) {
+    if (!this.isAdmin()) return;
     const cur = !!this.visibleCols()[key];
     if (cur) this.hideCol(key);
     else this.showCol(key);
+    this.syncVisibilityToBackend();
+  }
+
+  private syncVisibilityToBackend() {
+    const cols = this.visibleCols();
+    const payload = {
+      winPercentageVisibility: !!cols['winPercent'],
+      matchesPlayedVisibility: !!cols['gamesPlayed'],
+      victoriesVisibility: !!cols['totalWins'],
+      defeatsVisibility: true,
+      cumulativeScoreVisibility: !!cols['totalPoints'],
+      highestScoreVisibility: !!cols['highestScore'],
+    };
+    this.groupService.toggleVisibility(payload).subscribe({
+      next: () => {},
+      error: (err) => console.log('Failed to toggle visibility', err),
+    });
   }
 
   constructor(
@@ -64,8 +158,9 @@ export class LeaderboardList {
       const raw = localStorage.getItem('user');
       if (raw) {
         const u = JSON.parse(raw);
-        this.isAdmin.set(u.role === 'ADMIN');
-        this.addUserToPlayers(u);
+        const admin = u.role === 'ADMIN';
+        this.isAdmin.set(admin);
+        if (admin) this.displayedColumns.push('actions');
       }
     } catch {}
 
@@ -89,12 +184,45 @@ export class LeaderboardList {
             : p,
         ),
       );
+      this.dataSource.data = this.players();
+    });
+
+    window.addEventListener('group-refresh', () => {
+      this.groupService.getGroupDetails().subscribe({
+        next: (response) => {
+          const members = (response?.members || []).map((m: any) => ({
+            userId: m.userId,
+            username: m.username,
+            name: m.nickname || m.username,
+            totalWins: m.victories,
+            gamesPlayed: m.matchesPlayed,
+            totalPoints: m.cumulativeScore,
+            highestScore: m.highestScore,
+            winPercent: m.matchesPlayed ? Math.round((m.victories / m.matchesPlayed) * 100) : 0,
+            initials: (m.nickname || m.username || '').slice(0, 2).toUpperCase(),
+            color: this.hashColor(m.nickname || m.username),
+          }));
+          this.players.set(members);
+          this.dataSource.data = members;
+        },
+      });
     });
   }
 
   ngOnInit() {
     this.groupService.getGroupDetails().subscribe({
       next: (response) => {
+        const g = response?.group || {};
+        this.visibleCols.set({
+          rank: true,
+          player: true,
+          winPercent: !!g.winPercentageVisibility,
+          totalWins: !!g.victoriesVisibility,
+          gamesPlayed: !!g.matchesPlayedVisibility,
+          totalPoints: !!g.cumulativeScoreVisibility,
+          highestScore: !!g.highestScoreVisibility,
+          actions: this.isAdmin(),
+        });
         const members = (response?.members || []).map((m: any) => {
           const winPercent =
             m.winPercentage != null
@@ -116,6 +244,11 @@ export class LeaderboardList {
           };
         });
         this.players.set(members);
+        this.dataSource.data = members;
+        this.recomputeDisplayedColumns();
+        setTimeout(() => {
+          if (this.sort) this.dataSource.sort = this.sort!;
+        });
       },
       error: (err) => {
         console.log(err);
@@ -146,6 +279,7 @@ export class LeaderboardList {
         };
       }),
     );
+    this.dataSource.data = this.players();
   }
 
   private addUserToPlayers(u: any) {
@@ -185,6 +319,7 @@ export class LeaderboardList {
       this.userService.deleteUser(id).subscribe({
         next: () => {
           this.players.update((list) => list.filter((x: any) => x !== p));
+          this.dataSource.data = this.players();
         },
         error: (err) => alert(err?.error?.message || 'Failed to remove user'),
       });
@@ -280,6 +415,7 @@ export class LeaderboardList {
           });
         }
       }
+      this.dataSource.data = updated as any[];
       return updated;
     });
   }
