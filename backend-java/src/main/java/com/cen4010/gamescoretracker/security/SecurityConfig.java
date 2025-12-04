@@ -25,9 +25,7 @@ public class SecurityConfig {
             "/api/auth/login"
     };
 
-    private static final String[] ALLOWED_ORIGINS = {
-            "http://localhost:4200"
-    };
+    private static final String[] ALLOWED_ORIGINS = System.getenv("CORS_ALLOWED_ORIGINS").split(",");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,11 +36,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> {})
-                .sessionManagement(sm -> sm
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> {}) // delegates to CorsConfig
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PUBLIC_PATHS).permitAll() // pass the variable here
+                        .requestMatchers(PUBLIC_PATHS).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -54,16 +51,4 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        var config = new org.springframework.web.cors.CorsConfiguration();
-        config.setAllowedOriginPatterns(java.util.List.of(ALLOWED_ORIGINS)); // or your deployed site
-        config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(java.util.List.of("*"));
-        config.setAllowCredentials(true);
-
-        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
 }
