@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -24,8 +26,6 @@ public class SecurityConfig {
             "/api/auth/register",
             "/api/auth/login"
     };
-
-    private static final String[] ALLOWED_ORIGINS = System.getenv("CORS_ALLOWED_ORIGINS").split(",");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,6 +49,24 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        var config = new org.springframework.web.cors.CorsConfiguration();
+
+        // Parse env var or default to allow all
+        String origins = System.getenv("CORS_ALLOWED_ORIGINS");
+        if (origins == null || origins.isEmpty()) origins = "*";
+
+        config.setAllowedOriginPatterns(List.of(origins.split(","))); // use allowedOriginPatterns to accept *
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 }
