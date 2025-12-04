@@ -1,11 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private http = inject(HttpClient);
-  private url = 'http://localhost:8080/api/users';
+    private url = `${environment.apiBaseUrl}/users`;
+  
 
   private authHeaders(): { headers: HttpHeaders } {
     const token = localStorage.getItem('token');
