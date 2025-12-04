@@ -4,6 +4,7 @@ import com.cen4010.gamescoretracker.api.user.database.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -16,10 +17,14 @@ import java.util.UUID;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = Base64.getEncoder()
-            .encodeToString("my_secret_key_which_is_long_enough".getBytes());
-    private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
+    private final String secret;
+    private final long expiration;
 
+    public JwtUtil(@Value("${jwt.secret}") String secret,
+                   @Value("${jwt.expiration}") long expiration) {
+        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
+        this.expiration = expiration;
+    }
     // --- Token generation ---
     public String generateToken(User user) {
         return Jwts.builder()
@@ -28,8 +33,8 @@ public class JwtUtil {
                 .claim("role", user.getRole().name())
                 .claim("group_code", user.getGroupCode())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -56,7 +61,7 @@ public class JwtUtil {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET)
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
